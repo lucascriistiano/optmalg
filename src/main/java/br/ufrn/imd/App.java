@@ -13,15 +13,15 @@ public class App{
         
         System.out.println( "Hello World! -> " + filepath);
         
-        List<ProgramStatement> programStatements = null;
+        String programStatements = "";
         try {
-			programStatements = FileUtils.readProgramStatements(filepath);
+			programStatements = FileUtils.readFullStatements(filepath);
 		} catch (IOException e) {
 			//e.printStackTrace();
 			System.err.println("[ERROR] File " +filepath+ " not Found!");
 		}
         
-        System.out.println(programStatements.size() + " code lines");
+        System.out.println(programStatements);
     }
     
     static String readFilePath( String[] args ){
