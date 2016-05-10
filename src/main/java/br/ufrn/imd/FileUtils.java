@@ -10,31 +10,24 @@ import java.util.List;
 public class FileUtils {
 	
 	/**
-	 * Read a file and returns a list of statements.
+	 * Read a file and returns a full statements.
 	 * @param filePath relative file address.
-	 * @return list of statements.
+	 * @return String with full statements.
 	 * @throws IOException If the file is not found.
 	 */
-	static List<ProgramStatement> readProgramStatements(String filePath) throws IOException{
+	static String readFullStatements(String filePath) throws IOException{
 		File file = new File(filePath);
 	    FileReader fr = new FileReader(file);
 	    BufferedReader br = new BufferedReader(fr);
 	    String line;
-	    List<ProgramStatement> programStatements = new ArrayList<ProgramStatement>();
+	    String fullcode = "";
 	    while((line = br.readLine()) != null){
-	        line = line.trim();
-	        if(!line.equals("")){
-	        	programStatements.add(new ProgramStatement(line));
-	        }
-	        	
+	        fullcode+= line.trim();	
 	    }
 	    br.close();
 	    fr.close();
-		
-	    if (programStatements.isEmpty()){
-	    	return null;
-	    }
-	    return programStatements;
+	    
+	    return fullcode;
 	}
 	
 	
