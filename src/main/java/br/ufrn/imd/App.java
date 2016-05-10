@@ -13,11 +13,12 @@ public class App{
         
         System.out.println( "Hello World! -> " + filepath);
         
-        List<String> programStatements = null;
+        List<ProgramStatement> programStatements = null;
         try {
 			programStatements = FileUtils.readProgramStatements(filepath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.err.println("[ERROR] File " +filepath+ " not Found!");
 		}
         
         System.out.println(programStatements.size() + " code lines");

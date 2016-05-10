@@ -15,16 +15,16 @@ public class FileUtils {
 	 * @return list of statements.
 	 * @throws IOException If the file is not found.
 	 */
-	static List<String> readProgramStatements(String filePath) throws IOException{
+	static List<ProgramStatement> readProgramStatements(String filePath) throws IOException{
 		File file = new File(filePath);
 	    FileReader fr = new FileReader(file);
 	    BufferedReader br = new BufferedReader(fr);
 	    String line;
-	    List<String> programStatements = new ArrayList<String>();
+	    List<ProgramStatement> programStatements = new ArrayList<ProgramStatement>();
 	    while((line = br.readLine()) != null){
 	        line = line.trim();
 	        if(!line.equals("")){
-	        	programStatements.add(line);
+	        	programStatements.add(new ProgramStatement(line));
 	        }
 	        	
 	    }
