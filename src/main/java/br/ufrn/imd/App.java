@@ -1,6 +1,7 @@
 package br.ufrn.imd;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,6 +23,15 @@ public class App{
 		}
         
         System.out.println(programStatements);
+        
+        List<String> statements = FileUtils.createProgramStatement(programStatements);
+        
+        int i = 0;
+		for (String s : statements) {
+			System.out.println((i++)+": "+s);
+		}
+        
+        
     }
     
     static String readFilePath( String[] args ){
