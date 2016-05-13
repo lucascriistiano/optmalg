@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class FileUtils {
 	
@@ -37,7 +38,9 @@ public class FileUtils {
 		List<String> statements= new ArrayList<String>();
 		
 		char keys[] = {';','{','}','(',')'};
-		ArrayList<Integer> pilha = new ArrayList<Integer>();
+		
+		Stack<Integer> pilha = new Stack<Integer>();
+		
 		for(int i = 0; i < code.length(); i++){
 			char character = code.charAt(i);
 			
@@ -51,13 +54,11 @@ public class FileUtils {
 					if (statement != "")
 						statements.add(statement);
 					statement = "";
-					pilha.add(pilha.size());
-					statements.add("#"+(pilha.get(pilha.size()-1))+"#");
+					pilha.push(pilha.size());
+					statements.add("#"+pilha.lastElement()+"#");
 					break;
 				case '}':
-					int topPilha = pilha.get(pilha.size()-1);
-					pilha.remove(pilha.size()-1);
-					statements.add("#*"+(topPilha)+"*#");
+					statements.add("#*"+pilha.pop()+"*#");
 					break;
 //				case '(':
 //					
