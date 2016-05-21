@@ -1,4 +1,4 @@
-package br.ufrn.imd;
+package br.ufrn.imd.optmalg.model;
 
 public class ProgramStatement {
 	
@@ -12,7 +12,9 @@ public class ProgramStatement {
 		return statement;
 	}
 
-	public void setStatement(String statement) {
-		this.statement = statement;
+	@Override
+	public String toString() {
+		return this.statement;
 	}
+	
 }
