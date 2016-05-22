@@ -22,7 +22,7 @@ public class CodeAlgorithms {
 	public static List<ProgramStatement> createProgramStatementList(String code) {
 
 		List<ProgramStatement> statements = new ArrayList<>();
-		Stack<Integer> blockStack = new Stack<Integer>();
+		Stack<Integer> blockStack = new Stack<>();
 
 		String strStatement = "";
 		for (int i = 0; i < code.length(); i++) {
@@ -89,27 +89,30 @@ public class CodeAlgorithms {
 	public static CFG getGFC(List<BasicBlock> basicBlockList) {
 		CFG cfg = new CFG();
 		
-		Node inNode = cfg.createNode();
-		Node outNode = cfg.createNode();
-		cfg.createEdge(inNode, basicBlockList.get(0));
+		Node inNode = new Node();
+		Node outNode = new Node();
+		
+		cfg.createEdge(inNode, new Node(basicBlockList.get(0)));
 
-		for (BasicBlock basicBlock : basicBlockList) {
-			if (basicBlock.search(EXIT_STATEMENT)) {
-				cfg.createEdge(inNode, outNode);
-			}
-		}
+		// for (BasicBlock basicBlock : basicBlockList) {
+		// 	if (basicBlock.search(EXIT_STATEMENT)) {
+		// 		cfg.createEdge(inNode, outNode);
+		// 	}
+		// }
 
-		for (BasicBlock basicBlockbI : basicBlockList) {
-			for (BasicBlock basicBlockbJ : basicBlockList) {
-				if (basicBlockbJ.get(0).equals(String.valueOf(BLOCK_CLOSE)) && basicBlockbI.get(basicBlockbI.size() - 1).equals(BLOCK_OPEN)) {
-					cfg.createEdge(basicBlockbI, basicBlockbJ);
-				} else if (basicBlockList.indexOf(basicBlockbJ) == basicBlockList.indexOf(basicBlockbI) + 1
-						&& basicBlockbI.get(basicBlockbI.size() - 1).equals(String.valueOf(BLOCK_CLOSE_UNCONDITIONAL))) {
-					cfg.createEdge(bbI, bbJ);
-				}
-			}
-		}
-		// EtiquetarArestasCondicionais(gfc);
+		// for (BasicBlock basicBlockI : basicBlockList) {
+		// 	for (BasicBlock basicBlockJ : basicBlockList) {
+		// 		if (basicBlockJ.get(0).equals(String.valueOf(BLOCK_CLOSE)) && basicBlockI.get(basicBlockI.size() - 1).equals(BLOCK_OPEN)) {
+		// 			cfg.createEdge(basicBlockI, basicBlockJ);
+		// 		} else if (basicBlockList.indexOf(basicBlockbJ) == basicBlockList.indexOf(basicBlockI) + 1
+		// 				&& basicBlockI.get(basicBlockI.size() - 1).equals(String.valueOf(BLOCK_CLOSE_UNCONDITIONAL))) {
+		// 			cfg.createEdge(basicBlockI, basicBlockJ);
+		// 		}
+		// 	}
+		// }
+		// // EtiquetarArestasCondicionais(gfc);
+		
+		return cfg;
 	}
 
 }

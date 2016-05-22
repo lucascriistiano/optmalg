@@ -3,24 +3,21 @@ package br.ufrn.imd.optmalg.model;
 /**
  * Adaptado de http://learn.yancyparedes.net/2012/03/my-graph-implementation-in-java/
  *
- * @param <T>
  */
-public class Node<T> implements Comparable<Node<T>> {
+public class Node {
 
-	protected T data;
+	protected BasicBlock basicBlock;
 	
 	protected boolean visited;
 	public Integer index = null;
 	public Integer lowlink = null;
 	public double distance = Double.POSITIVE_INFINITY;
-	public Node<T> predecessor = null;
+	public Node predecessor = null;
 
-	public Node(T data) {
-		this.data = data;
-	}
-
-	public Node() {
-
+	public Node() { }
+	
+	public Node(BasicBlock basicBlock) {
+		this.basicBlock = basicBlock;
 	}
 
 	public boolean isVisited() {
@@ -35,15 +32,24 @@ public class Node<T> implements Comparable<Node<T>> {
 		visited = false;
 	}
 
-	public int compareTo(Node<T> ob) {
-		String tempA = this.toString();
-		String tempB = ob.toString();
-
-		return tempA.compareTo(tempB);
+	public BasicBlock getBasicBlock() {
+		return this.basicBlock;
 	}
-
+	
+	@Override
 	public String toString() {
-		return data.toString();
+		return this.basicBlock.toString();
 	}
+	
+	@Override
+    public boolean equals(Object obj) {
+       if (!(obj instanceof Node))
+            return false;
+        if (obj == this)
+            return true;
+
+        Node node = (Node) obj;
+		return this.basicBlock.equals(node.getBasicBlock());
+    }
 
 }

@@ -1,15 +1,27 @@
 package br.ufrn.imd.optmalg.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CFG {
 
-	public Node createNode() {
-		// TODO Auto-generated method stub
-		return null;
+	private List<Node> nodes;
+	private List<Edge> edges;
+
+	public CFG() {
+		this.nodes = new ArrayList<>();
+		this.edges = new ArrayList<>();
+	}
+
+	public void addNode(Node node) {
+		this.nodes.add(node);
 	}
 
 	public void createEdge(Node inNode, Node outNode) {
-		// TODO Auto-generated method stub
-		
+		Edge newEdge = new Edge(inNode, outNode);
+		if(!this.edges.contains(newEdge)) {
+			this.edges.add(newEdge);
+		}
 	}
 
 }

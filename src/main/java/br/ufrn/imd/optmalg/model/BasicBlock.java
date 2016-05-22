@@ -111,8 +111,8 @@ public class BasicBlock implements List<ProgramStatement> {
 		return subList(fromIndex, toIndex);
 	}
 	
-//	@Override
-//	public String toString() {
+	@Override
+	public String toString() {
 //		String returnString = "";
 //		returnString += "Lider: " + programStatements.get(0) + "\n";
 //
@@ -122,10 +122,27 @@ public class BasicBlock implements List<ProgramStatement> {
 //		}
 //		
 //		return returnString;
-//	}
-	
-	@Override
-	public String toString() {
+		
 		return programStatements.toString();
 	}
+	
+	@Override
+    public boolean equals(Object obj) {
+       if (!(obj instanceof BasicBlock))
+            return false;
+        if (obj == this)
+            return true;
+
+        BasicBlock basicBlock = (BasicBlock) obj;
+		if(basicBlock.size() != this.size())
+			return false;
+        
+        for(int i = 0; i < this.size(); i++) {
+        	if (!this.get(i).equals(basicBlock.get(i)))
+        		return false;
+        }
+        
+        return true;
+    }
+	
 }
