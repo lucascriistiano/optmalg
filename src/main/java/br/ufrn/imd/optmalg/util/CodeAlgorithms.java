@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Stack;
 
 import br.ufrn.imd.optmalg.model.BasicBlock;
+import br.ufrn.imd.optmalg.model.CFG;
+import br.ufrn.imd.optmalg.model.Node;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
 
 public class CodeAlgorithms {
-	
+
 	public static final char INSTRUCTION_END = ';';
 	public static final char BLOCK_OPEN = '{';
 	public static final char BLOCK_CLOSE = '}';
@@ -16,7 +18,7 @@ public class CodeAlgorithms {
 	public static final char RIGHT_PAREN = ')';
 	public static final char LINE_END = '\n';
 	public static final char TABULATION = '\t';
-	
+
 	public static List<ProgramStatement> createProgramStatementList(String code) {
 
 		List<ProgramStatement> statements = new ArrayList<>();
@@ -59,55 +61,55 @@ public class CodeAlgorithms {
 
 	public static List<BasicBlock> getBasicBlocks(List<ProgramStatement> programStatements) {
 		List<BasicBlock> basicBlocksList = new ArrayList<>();
-		
+
 		BasicBlock currentBasicBlock = new BasicBlock();
-		for(ProgramStatement programStatement : programStatements) {
-			if(programStatement.getStatement().equals(String.valueOf(BLOCK_OPEN))) {
-				int lastStatementIndex = currentBasicBlock.size()-1;
+		for (ProgramStatement programStatement : programStatements) {
+			if (programStatement.getStatement().equals(String.valueOf(BLOCK_OPEN))) {
+				int lastStatementIndex = currentBasicBlock.size() - 1;
 				ProgramStatement lastProgramStatement = currentBasicBlock.get(lastStatementIndex);
 				currentBasicBlock.remove(lastStatementIndex);
-				
+
 				basicBlocksList.add(currentBasicBlock);
-				
+
 				currentBasicBlock = new BasicBlock();
 				currentBasicBlock.add(lastProgramStatement);
-			
-			} else if(programStatement.getStatement().equals(String.valueOf(BLOCK_CLOSE))) {
+
+			} else if (programStatement.getStatement().equals(String.valueOf(BLOCK_CLOSE))) {
 				basicBlocksList.add(currentBasicBlock);
 				currentBasicBlock = new BasicBlock();
-			
+
 			} else {
 				currentBasicBlock.add(programStatement);
 			}
 		}
-		
+
 		return basicBlocksList;
 	}
-	
-	
-	public static GFC getGFC(List<BasicBlock> basicBlockList) {
-		GFC gfc = new GFC();
-		Node inNode = gfc.createNode();
-		Node outNode = gfc.createNode();
-		gfc.createEdge(inNode , basicBlockList.get(0));
+
+	public static CFG getGFC(List<BasicBlock> basicBlockList) {
+		CFG cfg = new CFG();
 		
-		for(BasicBlock bb : basicBlockList){
-			if(bb.search(EXIT_STATEMENT) ){
-				gfc.createEdge(inNode , outNode);
+		Node inNode = cfg.createNode();
+		Node outNode = cfg.createNode();
+		cfg.createEdge(inNode, basicBlockList.get(0));
+
+		for (BasicBlock basicBlock : basicBlockList) {
+			if (basicBlock.search(EXIT_STATEMENT)) {
+				cfg.createEdge(inNode, outNode);
 			}
 		}
-		for(BasicBlock bbI : basicBlockList){
-			for(BasicBlock bbJ : basicBlockList){
-				if(bbJ.get(0).equals(String.valueOf(BLOCK_CLOSE)) && bbI.get(bbI.size()-1).equals(BLOCK_OPEN) ){
-					gfc.createEdge(bbI , bbJ);
-				}
-				else if(basicBlockList.indexOf(bbJ) == basicBlockList.indexOf(bbI)+1
-						&& bbI.get(bbI.size()-1).equals(String.valueOf(BLOCK_CLOSE_UNCONDITIONAL))){
-					gfc.createEdge(bbI , bbJ);
+
+		for (BasicBlock basicBlockbI : basicBlockList) {
+			for (BasicBlock basicBlockbJ : basicBlockList) {
+				if (basicBlockbJ.get(0).equals(String.valueOf(BLOCK_CLOSE)) && basicBlockbI.get(basicBlockbI.size() - 1).equals(BLOCK_OPEN)) {
+					cfg.createEdge(basicBlockbI, basicBlockbJ);
+				} else if (basicBlockList.indexOf(basicBlockbJ) == basicBlockList.indexOf(basicBlockbI) + 1
+						&& basicBlockbI.get(basicBlockbI.size() - 1).equals(String.valueOf(BLOCK_CLOSE_UNCONDITIONAL))) {
+					cfg.createEdge(bbI, bbJ);
 				}
 			}
 		}
-		//EtiquetarArestasCondicionais(gfc);
+		// EtiquetarArestasCondicionais(gfc);
 	}
 
 }
