@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
+import br.ufrn.imd.optmalg.model.BasicBlock;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
+import br.ufrn.imd.optmalg.util.CodeAlgorithms;
 import br.ufrn.imd.optmalg.util.FileUtils;
 
 public class Main {
@@ -23,11 +25,12 @@ public class Main {
 		}
 		System.out.println(strProgramStatements);
 
-		List<ProgramStatement> programStatements = FileUtils.createProgramStatementList(strProgramStatements);
+		List<ProgramStatement> programStatements = CodeAlgorithms.createProgramStatementList(strProgramStatements);
 
-		int i = 0;
-		for (ProgramStatement s : programStatements) {
-			System.out.println((i++) + ": " + s.getStatement());
+		List<BasicBlock> basicBlocks = CodeAlgorithms.getBasicBlocks(programStatements);
+		System.out.println("Blocos: " + basicBlocks.size());
+		for(BasicBlock basicBlock : basicBlocks) {
+			System.out.println(basicBlock);
 		}
 	}
 

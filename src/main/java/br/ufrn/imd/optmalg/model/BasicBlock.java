@@ -8,28 +8,26 @@ import java.util.ListIterator;
 
 public class BasicBlock implements List<ProgramStatement> {
 
-	private List<ProgramStatement> block;
-	private int size;
+	private List<ProgramStatement> programStatements;
 
 	public BasicBlock() {
-		block = new ArrayList<ProgramStatement>();
-		this.size = 0;
+		programStatements = new ArrayList<ProgramStatement>();
 	}
 
 	public void addStatement(ProgramStatement statement) {
-		block.add(statement);
+		programStatements.add(statement);
 	}
 
 	public int size() {
-		return size;
+		return programStatements.size();
 	}
 
 	public boolean isEmpty() {
-		return (size == 0);
+		return programStatements.isEmpty();
 	}
 
 	public boolean contains(Object o) {
-		return block.contains(o);
+		return programStatements.contains(o);
 	}
 
 	public Iterator<ProgramStatement> iterator() {
@@ -37,79 +35,97 @@ public class BasicBlock implements List<ProgramStatement> {
 	}
 
 	public Object[] toArray() {
-		return block.toArray();
+		return programStatements.toArray();
 	}
 
 	public <T> T[] toArray(T[] a) {
-		return block.toArray(a);
+		return programStatements.toArray(a);
 	}
 
 	public boolean add(ProgramStatement e) {
-		return block.add(e);
+		return programStatements.add(e);
 	}
 
 	public boolean remove(Object o) {
-		return block.remove(o);
+		return programStatements.remove(o);
 	}
 
 	public boolean containsAll(Collection<?> c) {
-		return block.containsAll(c);
+		return programStatements.containsAll(c);
 	}
 
 	public boolean addAll(Collection<? extends ProgramStatement> c) {
-		return block.addAll(c);
+		return programStatements.addAll(c);
 	}
 
 	public boolean addAll(int index, Collection<? extends ProgramStatement> c) {
-		return block.addAll(c);
+		return programStatements.addAll(c);
 	}
 
 	public boolean removeAll(Collection<?> c) {
-		return block.removeAll(c);
+		return programStatements.removeAll(c);
 	}
 
 	public boolean retainAll(Collection<?> c) {
-		return block.retainAll(c);
+		return programStatements.retainAll(c);
 	}
 
 	public void clear() {
-		block.clear();
+		programStatements.clear();
 
 	}
 
 	public ProgramStatement get(int index) {
-		return block.get(index);
+		return programStatements.get(index);
 	}
 
 	public ProgramStatement set(int index, ProgramStatement element) {
-		return block.set(index, element);
+		return programStatements.set(index, element);
 	}
 
 	public void add(int index, ProgramStatement element) {
-		block.add(index, element);
+		programStatements.add(index, element);
 	}
 
 	public ProgramStatement remove(int index) {
-		return block.remove(index);
+		return programStatements.remove(index);
 	}
 
 	public int indexOf(Object o) {
-		return block.indexOf(o);
+		return programStatements.indexOf(o);
 	}
 
 	public int lastIndexOf(Object o) {
-		return block.lastIndexOf(o);
+		return programStatements.lastIndexOf(o);
 	}
 
 	public ListIterator<ProgramStatement> listIterator() {
-		return block.listIterator();
+		return programStatements.listIterator();
 	}
 
 	public ListIterator<ProgramStatement> listIterator(int index) {
-		return block.listIterator(index);
+		return programStatements.listIterator(index);
 	}
 
 	public List<ProgramStatement> subList(int fromIndex, int toIndex) {
 		return subList(fromIndex, toIndex);
+	}
+	
+//	@Override
+//	public String toString() {
+//		String returnString = "";
+//		returnString += "Lider: " + programStatements.get(0) + "\n";
+//
+//		returnString += "Instructions:\n";
+//		for(ProgramStatement programStatement : programStatements) {
+//			returnString += programStatement + "\n";
+//		}
+//		
+//		return returnString;
+//	}
+	
+	@Override
+	public String toString() {
+		return programStatements.toString();
 	}
 }
