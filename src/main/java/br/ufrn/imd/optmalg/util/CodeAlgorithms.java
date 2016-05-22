@@ -83,5 +83,31 @@ public class CodeAlgorithms {
 		
 		return basicBlocksList;
 	}
+	
+	
+	public static GFC getGFC(List<BasicBlock> basicBlockList) {
+		GFC gfc = new GFC();
+		Node inNode = gfc.createNode();
+		Node outNode = gfc.createNode();
+		gfc.createEdge(inNode , basicBlockList.get(0));
+		
+		for(BasicBlock bb : basicBlockList){
+			if(bb.search(EXIT_STATEMENT) ){
+				gfc.createEdge(inNode , outNode);
+			}
+		}
+		for(BasicBlock bbI : basicBlockList){
+			for(BasicBlock bbJ : basicBlockList){
+				if(bbJ.get(0).equals(String.valueOf(BLOCK_CLOSE)) && bbI.get(bbI.size()-1).equals(BLOCK_OPEN) ){
+					gfc.createEdge(bbI , bbJ);
+				}
+				else if(basicBlockList.indexOf(bbJ) == basicBlockList.indexOf(bbI)+1
+						&& bbI.get(bbI.size()-1).equals(String.valueOf(BLOCK_CLOSE_UNCONDITIONAL))){
+					gfc.createEdge(bbI , bbJ);
+				}
+			}
+		}
+		//EtiquetarArestasCondicionais(gfc);
+	}
 
 }
