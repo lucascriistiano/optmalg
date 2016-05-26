@@ -16,6 +16,14 @@ public class CFG {
 	public void addNode(Node node) {
 		this.nodes.add(node);
 	}
+	
+	public List<Node> getNodes() {
+		return this.nodes;
+	}
+	
+	public List<Edge> getEdges() {
+		return this.edges;
+	}
 
 	public void createEdge(Node inNode, Node outNode) {
 		Edge newEdge = new Edge(inNode, outNode);

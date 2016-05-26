@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import br.ufrn.imd.optmalg.model.StatementType;
 
 public class BasicBlock implements List<ProgramStatement> {
 
@@ -16,6 +17,24 @@ public class BasicBlock implements List<ProgramStatement> {
 
 	public void addStatement(ProgramStatement statement) {
 		programStatements.add(statement);
+	}
+	
+	public boolean hasStatement(StatementType searchedStatementType) {
+		for(ProgramStatement programStatement : programStatements) {
+			StatementType statementType = programStatement.getStatementType();
+			if (statementType == searchedStatementType) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public ProgramStatement firstProgramStatement() {
+		return programStatements.get(0);
+	}
+	
+	public ProgramStatement lastProgramStatement() {
+		return programStatements.get(size() - 1);
 	}
 
 	public int size() {

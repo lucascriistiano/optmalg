@@ -23,7 +23,7 @@ public class Main {
 		} catch (IOException e) {
 			System.err.println("[ERROR] File " + filepath + " not Found!");
 		}
-		System.out.println(strProgramStatements);
+		// System.out.println(strProgramStatements);
 
 		List<ProgramStatement> programStatements = CodeAlgorithms.createProgramStatementList(strProgramStatements);
 

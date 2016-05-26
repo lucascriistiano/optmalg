@@ -8,51 +8,112 @@ import br.ufrn.imd.optmalg.model.BasicBlock;
 import br.ufrn.imd.optmalg.model.CFG;
 import br.ufrn.imd.optmalg.model.Node;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
+import br.ufrn.imd.optmalg.model.StatementType;
 
 public class CodeAlgorithms {
 
 	public static final char INSTRUCTION_END = ';';
 	public static final char BLOCK_OPEN = '{';
 	public static final char BLOCK_CLOSE = '}';
-	public static final char LEFT_PAREN = '(';
-	public static final char RIGHT_PAREN = ')';
 	public static final char LINE_END = '\n';
 	public static final char TABULATION = '\t';
+	public static final char BAR = '/';
+	public static final char STAR = '*';
+
+	public static StatementType processStatementType(String statement) {
+		//TODO implement all method to get statement type by text
+		return StatementType.UNKNOWN;
+	}
 
 	public static List<ProgramStatement> createProgramStatementList(String code) {
 
 		List<ProgramStatement> statements = new ArrayList<>();
 		Stack<Integer> blockStack = new Stack<>();
 
+		int sequenceID = 0;
 		String strStatement = "";
+		
+		// boolean onSingleLineComment = false;
+		// boolean onMultiLineComment = false;
+
+		// boolean foundFirstBarSingleLineComment = false;
+		// boolean foundSecondBarSingleLineComment = false;
+		
+		// boolean foundFirstBarMultiLineComment = false;
+		// boolean foundFirstStarMultiLineComment = false;
+		// boolean foundSecondStarMultiLineComment = false;
+		// boolean foundSecondBarMultiLineComment = false;
+		
 		for (int i = 0; i < code.length(); i++) {
 			char character = code.charAt(i);
 			switch (character) {
 			case INSTRUCTION_END:
-				statements.add(new ProgramStatement(strStatement.trim()));
+				statements.add(new ProgramStatement(sequenceID, strStatement.trim()));
+				sequenceID++;
 				strStatement = "";
 				break;
+			
 			case BLOCK_OPEN:
 				if (strStatement != "") {
-					statements.add(new ProgramStatement(strStatement.trim()));
+					statements.add(new ProgramStatement(sequenceID, strStatement.trim()));
+					sequenceID++;
 				}
 				strStatement = "";
 				blockStack.push(blockStack.size());
 				statements.add(new ProgramStatement(String.valueOf(BLOCK_OPEN)));
 				break;
+			
 			case BLOCK_CLOSE:
 				statements.add(new ProgramStatement(String.valueOf(BLOCK_CLOSE)));
 				break;
-			// case LEFT_PAREN:
-			// break;
-			// case RIGHT_PAREN:
-			// break;
+			
 			case LINE_END:
+				// if(onSingleLineComment) {
+				// 	onSingleLineComment = false;
+				// }
+				
 				break;
+			
 			case TABULATION:
 				break;
+			
+			// case BAR:
+			// 	if(!onSingleLineComment) {
+			// 		if(character == BAR) {
+			// 			if(foundFirstBarSingleLineComment) {
+			// 				foundSecondBarSingleLineComment = true;
+			// 				onSingleLineComment = true;
+			// 			}
+			// 		}
+			// 	}
+			// 	break;
+				
+			
 			default:
-				strStatement += character;
+				// if(onMultiLineComment) {
+				// 	if(character == STAR && !foundSecondStarMultiLineComment && !foundSecondBarMultiLineComment) {
+				// 		foundSecondStarMultiLineComment = true;
+				// 	} else if(character == BAR && foundSecondStarMultiLineComment && !foundSecondBarMultiLineComment) {
+				// 		foundSecondBarMultiLineComment
+						
+				// 		onMultiLineComment = false;
+				// 		foundFirstBarMultiLineComment = false;
+				// 		foundFirstStarMultiLineComment = false;
+				// 		foundSecondStarMultiLineComment = false;
+				// 		foundSecondBarMultiLineComment = false;
+				// 	}
+
+				// } else if(!onSingleLineComment) {
+				// 	if(character == BAR) {
+				// 		if(foundFirstBarSingleLineComment) {
+				// 			foundSecondBarSingleLineComment = true;
+				// 			onSingleLineComment = true;
+				// 		}
+				// 	}
+					
+					
+					strStatement += character;
+				// }
 				break;
 			}
 		}
@@ -86,33 +147,44 @@ public class CodeAlgorithms {
 		return basicBlocksList;
 	}
 
-	public static CFG getGFC(List<BasicBlock> basicBlockList) {
-		CFG cfg = new CFG();
+	// public static CFG getGFC(List<BasicBlock> basicBlockList) {
+	// 	CFG cfg = new CFG();
 		
-		Node inNode = new Node();
-		Node outNode = new Node();
+	// 	Node inNode = new Node();
+	// 	Node outNode = new Node();
 		
-		cfg.createEdge(inNode, new Node(basicBlockList.get(0)));
+	// 	List<Node> nodeList = new ArrayList<>();
+	// 	for(int i = 0; i < basicBlockList.size(); i++) {
+	// 		Node node = new Node(basicBlockList.get(i));
+	// 		nodeList.add(node);
+	// 	}
+		
+	// 	cfg.createEdge(inNode, nodeList.get(0));
+		
+	// 	for(int i = 0; i < nodeList.size(); i++) {
+	// 		if (nodeList.get(i).getBasicBlock().hasStatement(StatementType.RETURN)) {
+	// 			cfg.createEdge(nodeList.get(0), outNode);
+	// 		}
+	// 	}
 
-		// for (BasicBlock basicBlock : basicBlockList) {
-		// 	if (basicBlock.search(EXIT_STATEMENT)) {
-		// 		cfg.createEdge(inNode, outNode);
-		// 	}
-		// }
-
-		// for (BasicBlock basicBlockI : basicBlockList) {
-		// 	for (BasicBlock basicBlockJ : basicBlockList) {
-		// 		if (basicBlockJ.get(0).equals(String.valueOf(BLOCK_CLOSE)) && basicBlockI.get(basicBlockI.size() - 1).equals(BLOCK_OPEN)) {
-		// 			cfg.createEdge(basicBlockI, basicBlockJ);
-		// 		} else if (basicBlockList.indexOf(basicBlockbJ) == basicBlockList.indexOf(basicBlockI) + 1
-		// 				&& basicBlockI.get(basicBlockI.size() - 1).equals(String.valueOf(BLOCK_CLOSE_UNCONDITIONAL))) {
-		// 			cfg.createEdge(basicBlockI, basicBlockJ);
-		// 		}
-		// 	}
-		// }
-		// // EtiquetarArestasCondicionais(gfc);
+	// 	for(int i = 0; i < nodeList.size(); i++) {
+	// 		BasicBlock basicBlockI = nodeList.get(i).getBasicBlock();
+			
+	// 		for (int j = 0; j < nodeList.size(); j++) {
+	// 			BasicBlock basicBlockJ = nodeList.get(j).getBasicBlock();
+				
+	// 			if (basicBlockI.firstProgramStatement().getNextSequenceID() == basicBlockJ.lastProgramStatement().getSequenceID()) {
+	// 				cfg.createEdge(basicBlockI, basicBlockJ);
+	// 			} else if ( j == (i+1) && basicBlockI.lastProgramStatement().isUnconditionalGOTO()){ 
+	// 				cfg.createEdge(basicBlockI, basicBlockJ);
+	// 			}
+	// 		}
+	// 	}
 		
-		return cfg;
-	}
+	// 	cfg.createEdge( outNode);
+	// 	etiquetarArestasCondicionais(gfc);
+		
+	// 	return cfg;
+	// }
 
 }
