@@ -32,6 +32,13 @@ public class Main {
 		for(BasicBlock basicBlock : basicBlocks) {
 			System.out.println(basicBlock);
 		}
+		
+		for(BasicBlock basicBlock : basicBlocks) {
+			for(int i = 0; i < basicBlock.size(); i++) {
+				ProgramStatement programStatement = basicBlock.get(i);
+				System.out.println(programStatement.getStatement() + " - Type: " + programStatement.getStatementType());
+			}
+		}
 	}
 
 	private static String readFilePath(String[] args) {

@@ -1,5 +1,8 @@
 package br.ufrn.imd.optmalg.model;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import br.ufrn.imd.optmalg.model.StatementType;
 import br.ufrn.imd.optmalg.util.CodeAlgorithms;
 
@@ -7,12 +10,12 @@ public class ProgramStatement {
 	
 	private String statement;
 	private int sequenceID;
-	private int prevSequenceID;
-	private int nextSequenceID;
+	private List<Integer> prevSequenceIDList;
 	private StatementType statementType;
 	
 	public ProgramStatement(String statement) {
 		this.statement = statement;
+		this.prevSequenceIDList = new ArrayList<>();
 	}
 	
 	public ProgramStatement(int sequenceID, String statement) {
@@ -23,13 +26,12 @@ public class ProgramStatement {
 	public int getSequenceID() {
 		return sequenceID;
 	}
-	
-	public int getPrevSequenceID() {
-		return prevSequenceID;
+
+	public void addPrevSequenceID(Integer prevSequenceID) {
+		this.prevSequenceIDList.add(prevSequenceID);
 	}
-	
-	public int getNextSequenceID() {
-		return nextSequenceID;
+	public List<Integer> getPrevSequenceIDs(){
+		return this.prevSequenceIDList;
 	}
 
 	public String getStatement() {
@@ -44,23 +46,19 @@ public class ProgramStatement {
 		return this.statementType;
 	}
 	
-	public void setNextSequenceID(int nextSequenceID) {
-		this.nextSequenceID = nextSequenceID;
+	public boolean isGOTO(){
+		//TODO Implement
+		return false;
 	}
 	
-	public void setPrevSequenceID(int prevSequenceID) {
-		this.prevSequenceID = prevSequenceID;
+	public boolean isUnconditionalGOTO(){
+		//TODO Implement
+		return false;
 	}
-	
-	
-	//IMPLEMENTS
-	public boolean isGOTO(){ return false;}
-	public boolean isUnconditionalGOTO(){ return false;}
 
 	@Override
 	public String toString() {
-		return this.sequenceID + ": " + this.statement +
-		" (" + this.prevSequenceID + "," + this.nextSequenceID + ")";
+		return this.sequenceID + ": " + this.statement + " " + this.prevSequenceIDList;
 	}
     
 	@Override
