@@ -133,10 +133,7 @@ public class BasicBlock implements List<ProgramStatement> {
 	@Override
 	public String toString() {
 		String returnString = "";
-//		returnString += "Leader: " + programStatements.get(0) + "\n";
-//		returnString += "Instructions:\n";
 		for(ProgramStatement programStatement : programStatements) {
-//			returnString += "\t" + programStatement + "\n";
 			returnString += programStatement + "\n";
 		}
 		
