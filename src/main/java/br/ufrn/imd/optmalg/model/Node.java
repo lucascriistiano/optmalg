@@ -1,4 +1,6 @@
 package br.ufrn.imd.optmalg.model;
+// import java.util.ArrayList;
+// import java.util.List;
 
 /**
  * Adaptado de http://learn.yancyparedes.net/2012/03/my-graph-implementation-in-java/
@@ -13,6 +15,16 @@ public class Node {
 	public Integer lowlink = null;
 	public double distance = Double.POSITIVE_INFINITY;
 	public Node predecessor = null;
+	
+	// private List<Node> childrens;
+	
+	// public void addChild(Node node){
+	// 	childrens.add(node);
+	// }
+	
+	// public List<Node> getChildrens(){
+	// 	return this.childrens;
+	// }
 
 	public Node() { }
 	

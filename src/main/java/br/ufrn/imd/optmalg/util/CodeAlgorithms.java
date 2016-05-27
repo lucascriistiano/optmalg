@@ -25,52 +25,21 @@ public class CodeAlgorithms {
 	public static final char STAR = '*';
 
 	public static List<ProgramStatement> createProgramStatementList(String code) {
-
 		List<ProgramStatement> statements = new ArrayList<>();
-		
 		int sequenceID = 0;
-		int prevStatementSequenceID = -1;
-		
-		Stack<Integer> openBlockSequenceIDStack = new Stack<>();
-		int lastClosedBlockSequenceID = -1;
 		
 		String strStatement = "";
 		int openPar = 0;
-		
-		// boolean onSingleLineComment = false;
-		// boolean onMultiLineComment = false;
-
-		// boolean foundFirstBarSingleLineComment = false;
-		// boolean foundSecondBarSingleLineComment = false;
-		
-		// boolean foundFirstBarMultiLineComment = false;
-		// boolean foundFirstStarMultiLineComment = false;
-		// boolean foundSecondStarMultiLineComment = false;
-		// boolean foundSecondBarMultiLineComment = false;
 		
 		char last_character = code.charAt(0);
 		
 		for (int i = 0; i < code.length(); i++) {
 			char character = code.charAt(i);
-			
-			ProgramStatement foundStatement;
 			switch (character) {
-				
 			case INSTRUCTION_END:
 				if(openPar == 0) {
-					foundStatement = new ProgramStatement(sequenceID, strStatement.trim());
-					foundStatement.addPrevSequenceID(prevStatementSequenceID);
-					
-					if(lastClosedBlockSequenceID != -1) {
-						foundStatement.addPrevSequenceID(lastClosedBlockSequenceID);
-						lastClosedBlockSequenceID = -1;
-					}
-					
-					statements.add(foundStatement);
-
-					prevStatementSequenceID = sequenceID;
+					statements.add(new ProgramStatement(sequenceID, strStatement.trim()));
 					sequenceID++;
-					
 					strStatement = "";
 				} else {
 					strStatement += character;
@@ -79,27 +48,15 @@ public class CodeAlgorithms {
 			
 			case BLOCK_OPEN:
 				if (!strStatement.equals("")) {
-					foundStatement = new ProgramStatement(sequenceID, strStatement.trim());
-					foundStatement.addPrevSequenceID(prevStatementSequenceID);
-					
-					if(lastClosedBlockSequenceID != -1) {
-						foundStatement.addPrevSequenceID(lastClosedBlockSequenceID);
-						lastClosedBlockSequenceID = -1;
-					}
-					
-					statements.add(foundStatement);
-					
-					prevStatementSequenceID = sequenceID;
+					statements.add(new ProgramStatement(sequenceID, strStatement.trim()));
 					sequenceID++;
 					strStatement = "";
+					
+					statements.add(new ProgramStatement(String.valueOf(BLOCK_OPEN)));
 				}
-				
-				openBlockSequenceIDStack.push(prevStatementSequenceID);
-				statements.add(new ProgramStatement(String.valueOf(BLOCK_OPEN)));
 				break;
 			
 			case BLOCK_CLOSE:
-				lastClosedBlockSequenceID = openBlockSequenceIDStack.pop();
 				statements.add(new ProgramStatement(String.valueOf(BLOCK_CLOSE)));
 				break;
 			
@@ -114,11 +71,6 @@ public class CodeAlgorithms {
 				break;
 			
 			case LINE_END:
-				// if(onSingleLineComment) {
-				// 	onSingleLineComment = false;
-				// 	foundFirstBarSingleLineComment = false;
-				// 	foundSecondBarSingleLineComment = false;
-				// }
 				break;
 				
 			case BLANK_SPACE:
@@ -128,51 +80,254 @@ public class CodeAlgorithms {
 					
 			case TABULATION:
 				break;
-			
-			// case BAR:
-			// 	if(!onSingleLineComment) {
-			// 		if(foundFirstBarSingleLineComment) {
-			// 			foundSecondBarSingleLineComment = true;
-			// 			onSingleLineComment = true;
-			// 		} else {
-			// 			foundFirstBarMultiLineComment = true;
-			// 		}
-			// 	}
-			// 	break;
-				
-			
-			default:
-				// if(onMultiLineComment) {
-				// 	if(character == STAR && !foundSecondStarMultiLineComment && !foundSecondBarMultiLineComment) {
-				// 		foundSecondStarMultiLineComment = true;
-				// 	} else if(character == BAR && foundSecondStarMultiLineComment && !foundSecondBarMultiLineComment) {
-				// 		foundSecondBarMultiLineComment
-						
-				// 		onMultiLineComment = false;
-				// 		foundFirstBarMultiLineComment = false;
-				// 		foundFirstStarMultiLineComment = false;
-				// 		foundSecondStarMultiLineComment = false;
-				// 		foundSecondBarMultiLineComment = false;
-				// 	}
 
-				// } else if(!onSingleLineComment) {
-				// 	if(character == BAR) {
-				// 		if(foundFirstBarSingleLineComment) {
-				// 			foundSecondBarSingleLineComment = true;
-				// 			onSingleLineComment = true;
-				// 		}
-				// 	}
-					
-				
-					strStatement += character;
-					
-				// }
+			default:
+				strStatement += character;
 				break;
 			}
 			last_character = character;
 		}
-		return statements;
+		
+		return definePreviousStatementsSequenceID(statements);
 	}
+	
+	
+	/*
+	IF:
+	- Próximos:
+		- Primeira instrução depois da regra do if (primeira instrucao do nível seguinte)
+		- Instrução de else de um mesmo nível
+		
+	
+	
+	
+	
+	
+	*/
+	
+	
+	private static List<ProgramStatement> definePreviousStatementsSequenceID(List<ProgramStatement> programStatements) {
+		//Define previous sequence id of consecutive instructions
+		int prevStatementSequenceID = -1;
+		Stack<Integer> prevSequenceIDParentBlockStack = new Stack<>();
+		
+		for(int i = 0; i < programStatements.size(); i++) {
+			ProgramStatement programStatement = programStatements.get(i);
+			StatementType statementType = programStatement.getStatementType();
+			int statementSequenceID = programStatement.getSequenceID();
+			
+			if(statementType == StatementType.BLOCK_OPEN) {
+				prevSequenceIDParentBlockStack.push(prevStatementSequenceID);
+			} else if(statementType == StatementType.BLOCK_CLOSE) {
+				prevStatementSequenceID = prevSequenceIDParentBlockStack.pop();
+			} else {
+				programStatements.get(i).addPrevSequenceID(prevStatementSequenceID);
+				prevStatementSequenceID = statementSequenceID;
+			}
+		}
+		
+		
+		Stack<Map<ProgramStatement, Integer>> levelsPreviousSequenceIDStack = new Stack<>();
+		Map<ProgramStatement, Integer> currentLevelSequenceIDMap = new HashMap<Integer, Integer>();
+		int currentLevel = 0;
+		
+		
+		for(ProgramStatement programStatement : programStatements) {
+			StatementType statementType = programStatement.getStatementType();
+			int statementSequenceID = programStatement.getSequenceID();
+			
+			if(statementType == StatementType.BLOCK_OPEN) {
+				levelsPreviousSequenceIDStack.push(currentLevelSequenceIDMap);
+				currentLevelSequenceIDMap = new HashMap<>();
+				currentLevel++;
+			
+			} else if(statementType == StatementType.BLOCK_CLOSE) {
+				Map<Integer, Integer> parentLevelSequenceIDMap = levelsPreviousSequenceIDStack.pop();
+				if(!levelsPreviousSequenceIDStack.isEmpty() && !parentLevelSequenceIDMap.isEmpty()) {
+					levelsPreviousSequenceIDStack.addAll(currentLevelSequenceIDMap);
+				}
+				
+				currentLevelSequenceIDMap = parentLevelSequenceIDMap;
+				currentLevel--;
+
+			} else {
+				if(statementType == StatementType.IF || statementType == StatementType.ELSE_IF || statementType == StatementType.ELSE) {
+					currentLevelSequenceIDMap.put(programStatement, currentLevel);
+			
+					if(statementType == StatementType.ELSE_IF) {
+					
+					
+					} else if(statementType == StatementType.ELSE) {
+						//Remove if and elseif of list when find a closing else on same level
+						
+					}
+				// } else if(statementType == StatementType.FOR || statementType == StatementType.WHILE) {
+					
+					
+					
+				} else {
+					
+					
+					//Check if a if, elseif, else, for, while is open and check if is last instruction
+					
+					
+				}
+				
+				
+				
+				
+				
+				
+				programStatements.get(i).addPrevSequenceID(prevStatementSequenceID);
+				prevStatementSequenceID = statementSequenceID;
+			}
+			
+			
+			
+			
+		}
+		
+		
+		// for(int i = 0; i < programStatements.size(); i++) {
+		// 	ProgramStatement statement = programStatements.get(i);
+		// 	StatementType statementIType = statement.getStatementType();
+		// 	int statementISequenceID = statement.getSequenceID();
+			
+		// 	if(statementIType == StatementType.IF || statementIType == StatementType.ELSE_IF) {
+		// 		int level = 0;
+		// 		for(int j = i+1; j < programStatements.size(); j++) {
+		// 			ProgramStatement statementJ = programStatements.get(j);
+		// 			StatementType statementJType = statementJ.getStatementType();
+		// 			if(statementJType == StatementType.BLOCK_OPEN) {
+		// 				level++;
+					
+		// 			} else if(statementJType == StatementType.BLOCK_CLOSE) {
+		// 				level--;
+					
+		// 			} else if(level == 0) {
+		// 				if(statementJType == StatementType.ELSE_IF) {
+		// 					programStatements.get(j).addPrevSequenceID(statementISequenceID);
+		// 				} else if(statementJType == StatementType.ELSE) {
+		// 					programStatements.get(j).addPrevSequenceID(statementISequenceID);
+		// 					break;
+		// 				} else { //Primeira instrucao depois do if no mesmo nível
+		// 					programStatements.get(j).addPrevSequenceID(statementISequenceID);
+		// 					break;
+		// 				}
+					
+		// 			} else if(level < 0) { //Instrucao diferente de abertura e fechamento de bloco em nível mais externo
+		// 				break;
+		// 			}
+		// 		}
+			
+		// 	} else if(statementIType == StatementType.FOR) {
+		// 		int level = 0;
+		// 		for(int j = i+1; j < programStatements.size(); j++) {
+		// 			ProgramStatement statementJ = programStatements.get(j);
+		// 			StatementType statementJType = statementJ.getStatementType();
+		// 			if(statementJType == StatementType.BLOCK_OPEN) {
+		// 				level++;
+					
+		// 			} else if(statementJType == StatementType.BLOCK_CLOSE) {
+		// 				level--;
+					
+		// 			} else if(level == 0) {
+		// 				if(statementJType == StatementType.ELSE_IF) {
+		// 					programStatements.get(j).addPrevSequenceID(statementISequenceID);
+		// 				} else if(statementJType == StatementType.ELSE) {
+		// 					programStatements.get(j).addPrevSequenceID(statementISequenceID);
+		// 					break;
+		// 				} else { //Primeira instrucao depois do if no mesmo nível
+		// 					programStatements.get(j).addPrevSequenceID(statementISequenceID);
+		// 					break;
+		// 				}
+					
+		// 			} else if(level < 0) { //Instrucao diferente de abertura e fechamento de bloco em nível mais externo
+		// 				break;
+		// 			}
+		// 		}
+				
+		// 	}
+		// }
+
+		return programStatements;
+	}
+	
+	public static List<BasicBlock> getBasicBlocks(List<ProgramStatement> programStatements) {
+		List<BasicBlock> basicBlocksList = new ArrayList<>();
+
+		BasicBlock currentBasicBlock = new BasicBlock();
+		for (ProgramStatement programStatement : programStatements) {
+			if (programStatement.getStatement().equals(String.valueOf(BLOCK_OPEN))) {
+				int lastStatementIndex = currentBasicBlock.size() - 1;
+				ProgramStatement lastProgramStatement = currentBasicBlock.get(lastStatementIndex);
+				currentBasicBlock.remove(lastStatementIndex);
+
+				if(currentBasicBlock.size() > 0) {
+					basicBlocksList.add(currentBasicBlock);
+				}
+
+				currentBasicBlock = new BasicBlock();
+				currentBasicBlock.add(lastProgramStatement);
+		
+			} else if (programStatement.getStatement().equals(String.valueOf(BLOCK_CLOSE))) {
+				if(currentBasicBlock.size() > 0) {
+					basicBlocksList.add(currentBasicBlock);
+					currentBasicBlock = new BasicBlock();
+				}
+				
+				// //Add an empty basic block to represent block group closing
+				// currentBasicBlock = new BasicBlock();
+				// basicBlocksList.add(currentBasicBlock);
+				
+				// currentBasicBlock = new BasicBlock();
+			} else {
+				currentBasicBlock.add(programStatement);
+			}
+		}
+
+		return basicBlocksList;
+	}
+	
+	// public static CFG getGFC(List<BasicBlock> basicBlockList) {
+	// 	CFG cfg = new CFG();
+		
+	// 	Node inNode = new Node();
+	// 	Node outNode = new Node();
+		
+	// 	List<Node> nodeList = new ArrayList<>();
+	// 	for(int i = 0; i < basicBlockList.size(); i++) {
+	// 		Node node = new Node(basicBlockList.get(i));
+	// 		nodeList.add(node);
+	// 	}
+		
+	// 	cfg.createEdge(inNode, nodeList.get(0));
+		
+	// 	for(int i = 0; i < nodeList.size(); i++) {
+	// 		if (nodeList.get(i).getBasicBlock().hasStatement(StatementType.RETURN)) {
+	// 			cfg.createEdge(nodeList.get(0), outNode);
+	// 		}
+	// 	}
+
+	// 	for(int i = 0; i < nodeList.size(); i++) {
+	// 		BasicBlock basicBlockI = nodeList.get(i).getBasicBlock();
+			
+	// 		for (int j = 0; j < nodeList.size(); j++) {
+	// 			BasicBlock basicBlockJ = nodeList.get(j).getBasicBlock();
+				
+	// 			if (basicBlockJ.firstProgramStatement().getPrevSequenceIDs().contains( basicBlockI.lastProgramStatement().getSequenceID() )) {
+	// 				cfg.createEdge(nodeList.get(i), nodeList.get(j));
+	// 			} else if ( j == (i+1) && basicBlockI.lastProgramStatement().isUnconditionalGOTO()){ 
+	// 				cfg.createEdge(nodeList.get(i), nodeList.get(j));
+	// 			}
+	// 		}
+	// 	}
+		
+	// 	//cfg.createEdge( outNode);
+	// 	//etiquetarArestasCondicionais(gfc);
+		
+	// 	return cfg;
+	// }
 	
 	public static StatementType processStatementType(String statement) {
 		if (Pattern.matches("if(\\s)*\\((.*)\\)", statement)) {
@@ -234,75 +389,16 @@ public class CodeAlgorithms {
 		if (statement.equals("finally")) {
 			return StatementType.FINALLY;
 		}
+		
+		if (statement.equals("{")) {
+			return StatementType.BLOCK_OPEN;
+		}
+		
+		if (statement.equals("}")) {
+			return StatementType.BLOCK_CLOSE;
+		}
 
 		return StatementType.OTHER;
 	}
-
-	public static List<BasicBlock> getBasicBlocks(List<ProgramStatement> programStatements) {
-		List<BasicBlock> basicBlocksList = new ArrayList<>();
-
-		BasicBlock currentBasicBlock = new BasicBlock();
-		for (ProgramStatement programStatement : programStatements) {
-			if (programStatement.getStatement().equals(String.valueOf(BLOCK_OPEN))) {
-				int lastStatementIndex = currentBasicBlock.size() - 1;
-				ProgramStatement lastProgramStatement = currentBasicBlock.get(lastStatementIndex);
-				currentBasicBlock.remove(lastStatementIndex);
-
-				basicBlocksList.add(currentBasicBlock);
-
-				currentBasicBlock = new BasicBlock();
-				currentBasicBlock.add(lastProgramStatement);
-
-			} else if (programStatement.getStatement().equals(String.valueOf(BLOCK_CLOSE))) {
-				basicBlocksList.add(currentBasicBlock);
-				currentBasicBlock = new BasicBlock();
-
-			} else {
-				currentBasicBlock.add(programStatement);
-			}
-		}
-
-		return basicBlocksList;
-	}
-
-	// public static CFG getGFC(List<BasicBlock> basicBlockList) {
-	// 	CFG cfg = new CFG();
-		
-	// 	Node inNode = new Node();
-	// 	Node outNode = new Node();
-		
-	// 	List<Node> nodeList = new ArrayList<>();
-	// 	for(int i = 0; i < basicBlockList.size(); i++) {
-	// 		Node node = new Node(basicBlockList.get(i));
-	// 		nodeList.add(node);
-	// 	}
-		
-	// 	cfg.createEdge(inNode, nodeList.get(0));
-		
-	// 	for(int i = 0; i < nodeList.size(); i++) {
-	// 		if (nodeList.get(i).getBasicBlock().hasStatement(StatementType.RETURN)) {
-	// 			cfg.createEdge(nodeList.get(0), outNode);
-	// 		}
-	// 	}
-
-	// 	for(int i = 0; i < nodeList.size(); i++) {
-	// 		BasicBlock basicBlockI = nodeList.get(i).getBasicBlock();
-			
-	// 		for (int j = 0; j < nodeList.size(); j++) {
-	// 			BasicBlock basicBlockJ = nodeList.get(j).getBasicBlock();
-				
-	// 			if (basicBlockJ.firstProgramStatement().getPrevSequenceIDs().contains( basicBlockI.lastProgramStatement().getSequenceID() )) {
-	// 				cfg.createEdge(nodeList.get(i), nodeList.get(j));
-	// 			} else if ( j == (i+1) && basicBlockI.lastProgramStatement().isUnconditionalGOTO()){ 
-	// 				cfg.createEdge(nodeList.get(i), nodeList.get(j));
-	// 			}
-	// 		}
-	// 	}
-		
-	// 	//cfg.createEdge( outNode);
-	// 	//etiquetarArestasCondicionais(gfc);
-		
-	// 	return cfg;
-	// }
 
 }

@@ -15,8 +15,6 @@ public class Main {
 
 	public static void main(String[] args) {
 		String filepath = readFilePath(args);
-		System.out.println("Input file: " + filepath);
-
 		String strProgramStatements = "";
 		try {
 			strProgramStatements = FileUtils.readFullStatements(filepath);
@@ -33,12 +31,12 @@ public class Main {
 			System.out.println(basicBlock);
 		}
 		
-		for(BasicBlock basicBlock : basicBlocks) {
-			for(int i = 0; i < basicBlock.size(); i++) {
-				ProgramStatement programStatement = basicBlock.get(i);
-				System.out.println(programStatement.getStatement() + " - Type: " + programStatement.getStatementType());
-			}
-		}
+		// for(BasicBlock basicBlock : basicBlocks) {
+		// 	for(int i = 0; i < basicBlock.size(); i++) {
+		// 		ProgramStatement programStatement = basicBlock.get(i);
+		// 		System.out.println(programStatement.getStatement() + " - Type: " + programStatement.getStatementType());
+		// 	}
+		// }
 	}
 
 	private static String readFilePath(String[] args) {
@@ -46,7 +44,7 @@ public class Main {
 
 		if (args.length == 1) {
 			filepath = args[0];
-			System.out.println("[INFO] analyzing " + filepath);
+			System.out.println("[INFO] Input file " + filepath);
 		} else {
 			System.out.println("[ERROR] Empty input argument");
 			System.out.print("Enter the file containing the source code to analyze: ");

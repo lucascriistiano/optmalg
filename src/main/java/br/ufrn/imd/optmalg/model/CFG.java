@@ -28,8 +28,36 @@ public class CFG {
 	public void createEdge(Node inNode, Node outNode) {
 		Edge newEdge = new Edge(inNode, outNode);
 		if(!this.edges.contains(newEdge)) {
+			// inNode.addChild(outNode);
 			this.edges.add(newEdge);
 		}
+	}
+	
+	//O(n * (m+n))
+	private void print() {
+		for(Node node : nodes){
+			BasicBlock el = node.getBasicBlock();
+			int i = el.firstProgramStatement().getSequenceID();
+			int j = el.lastProgramStatement().getSequenceID();
+			System.out.print("[" + i + "," + j + "] -> ");
+			
+			
+			List<Node> nodeChildren = new ArrayList<>();
+			for(Edge edge : edges){
+				if(edge.getOrigin().equals(node)){
+					nodeChildren.add(edge.getDestination());
+				}
+			}
+			
+			for(Node child : nodeChildren){
+				BasicBlock elChild = child.getBasicBlock();
+				int ii = elChild.firstProgramStatement().getSequenceID();
+				int jj = elChild.lastProgramStatement().getSequenceID();
+				System.out.print("[" + ii + "," + jj + "], ");
+			}
+			System.out.println();
+		}
+		
 	}
 
 }
