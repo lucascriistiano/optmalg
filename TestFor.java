@@ -6,7 +6,7 @@ public class TestFor {
 		System.out.println("Starting")       ;
 		
 		for(int i = 0; i < 100; i++) {
-			System.out.println("In loop);
+			System.out.println("In loop");
 			System.out.println(i);
 		}
 		

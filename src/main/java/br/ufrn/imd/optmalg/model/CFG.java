@@ -16,40 +16,41 @@ public class CFG {
 	public void addNode(Node node) {
 		this.nodes.add(node);
 	}
-	
+
 	public List<Node> getNodes() {
 		return this.nodes;
 	}
-	
+
 	public List<Edge> getEdges() {
 		return this.edges;
 	}
 
 	public void createEdge(Node inNode, Node outNode) {
 		Edge newEdge = new Edge(inNode, outNode);
-		if(!this.edges.contains(newEdge)) {
-			// inNode.addChild(outNode);
+		if (!this.edges.contains(newEdge)) {
+			inNode.addChild(outNode);
 			this.edges.add(newEdge);
 		}
 	}
-	
-	//O(n * (m+n))
-	private void print() {
-		for(Node node : nodes){
+
+	/**
+	 * Prints a generated CFG. Has complexity of O(n * (m+n))
+	 */
+	public void print() {
+		for (Node node : nodes) {
 			BasicBlock el = node.getBasicBlock();
 			int i = el.firstProgramStatement().getSequenceID();
 			int j = el.lastProgramStatement().getSequenceID();
 			System.out.print("[" + i + "," + j + "] -> ");
-			
-			
+
 			List<Node> nodeChildren = new ArrayList<>();
-			for(Edge edge : edges){
-				if(edge.getOrigin().equals(node)){
+			for (Edge edge : edges) {
+				if (edge.getOrigin().equals(node)) {
 					nodeChildren.add(edge.getDestination());
 				}
 			}
-			
-			for(Node child : nodeChildren){
+
+			for (Node child : nodeChildren) {
 				BasicBlock elChild = child.getBasicBlock();
 				int ii = elChild.firstProgramStatement().getSequenceID();
 				int jj = elChild.lastProgramStatement().getSequenceID();
@@ -57,7 +58,7 @@ public class CFG {
 			}
 			System.out.println();
 		}
-		
+
 	}
 
 }

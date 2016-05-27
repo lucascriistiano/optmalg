@@ -132,17 +132,15 @@ public class BasicBlock implements List<ProgramStatement> {
 	
 	@Override
 	public String toString() {
-//		String returnString = "";
-//		returnString += "Lider: " + programStatements.get(0) + "\n";
-//
+		String returnString = "";
+//		returnString += "Leader: " + programStatements.get(0) + "\n";
 //		returnString += "Instructions:\n";
-//		for(ProgramStatement programStatement : programStatements) {
-//			returnString += programStatement + "\n";
-//		}
-//		
-//		return returnString;
+		for(ProgramStatement programStatement : programStatements) {
+//			returnString += "\t" + programStatement + "\n";
+			returnString += programStatement + "\n";
+		}
 		
-		return programStatements.toString();
+		return returnString;
 	}
 	
 	@Override
