@@ -7,7 +7,6 @@ public class Test {
 			if(i % 2 == 0) {
 				continue;
 			}
-			
 			System.out.println(i);
 		}
 		

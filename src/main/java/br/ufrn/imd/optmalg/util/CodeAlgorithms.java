@@ -96,28 +96,29 @@ public class CodeAlgorithms {
 
 	private static List<ProgramStatement> definePreviousStatementsSequenceID(List<ProgramStatement> programStatements) {
 		// Define previous sequence id of consecutive instructions
+		
+		
 		int prevStatementSequenceID = -1;
-		Stack<Integer> prevSequenceIDParentBlockStack = new Stack<>();
 
 		for (int i = 0; i < programStatements.size(); i++) {
 			ProgramStatement programStatement = programStatements.get(i);
 			StatementType statementType = programStatement.getStatementType();
 			int statementSequenceID = programStatement.getSequenceID();
 
-			if (statementType == StatementType.BLOCK_OPEN) {
-				prevSequenceIDParentBlockStack.push(prevStatementSequenceID);
-			} else if (statementType == StatementType.BLOCK_CLOSE) {
-				prevStatementSequenceID = prevSequenceIDParentBlockStack.pop();
-			} else {
-				programStatements.get(i).addPrevSequenceID(prevStatementSequenceID);
+			if (statementType == StatementType.BLOCK_CLOSE) {
+				prevStatementSequenceID = -1;
+			} else if (statementType != StatementType.BLOCK_OPEN) {
+				if(prevStatementSequenceID != -1) {
+					programStatements.get(i).addPrevSequenceID(prevStatementSequenceID);
+				}
 				prevStatementSequenceID = statementSequenceID;
 			}
 		}
 
 		Stack<Map<ProgramStatement, Integer>> levelsPreviousSequenceIDStack = new Stack<>();
 		Map<ProgramStatement, Integer> currentLevelSequenceIDMap = new HashMap<ProgramStatement, Integer>();
+		
 		int currentLevel = 0;
-
 		ProgramStatement lastCommonProgramStatement = null;
 
 		Stack<ProgramStatement> lastIfElseWithoutElseStack = new Stack<>();

@@ -1,4 +1,4 @@
-package br.ufrn.imd;                                    //00 [-1]
+package br.ufrn.imd;                                    //00 []
 
 public class TestSimple {                               //01 [0]
 
