@@ -59,7 +59,6 @@ public class ProgramStatement {
 
 	@Override
 	public String toString() {
-		Collections.sort(this.prevSequenceIDList);
 		return this.sequenceID + ": " + this.statement + " " + this.prevSequenceIDList;
 	}
     
