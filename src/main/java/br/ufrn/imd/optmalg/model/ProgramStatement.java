@@ -2,7 +2,6 @@ package br.ufrn.imd.optmalg.model;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import br.ufrn.imd.optmalg.model.StatementType;
 import br.ufrn.imd.optmalg.util.CodeAlgorithms;
