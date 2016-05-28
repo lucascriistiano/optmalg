@@ -1,6 +1,8 @@
 package br.ufrn.imd;
 
 public class Test {
+	
+	
 
 	public static void main(String[] args) {
 		for(int i = 0; i < 100; i++) {
@@ -10,13 +12,15 @@ public class Test {
 			System.out.println(i);
 		}
 		
-		boolean bool = false;
+		boolean/*que coisa*/bool = false;
 		if(bool) {
 			System.out.println("True");
 		} else {
 			System.out.println("False");
 		}
 		
+		//AEWWW
+
 		int value = 1;
 		switch(value) {
 			case 1:

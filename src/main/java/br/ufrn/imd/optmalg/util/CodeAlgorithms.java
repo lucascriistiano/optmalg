@@ -25,6 +25,7 @@ public class CodeAlgorithms {
 	public static final char TABULATION = '\t';
 	public static final char BLANK_SPACE = ' ';
 	public static final char BAR = '/';
+	public static final char REVERSED_BAR = '\\';
 	public static final char STAR = '*';
 
 	public static List<ProgramStatement> createProgramStatementList(String code) {
@@ -83,7 +84,36 @@ public class CodeAlgorithms {
 
 			case TABULATION:
 				break;
+				
+			case BAR:
+				if(last_character == BAR){
+					while(character != LINE_END){
+						character = code.charAt(++i);
+					}
+					//character = code.charAt(++i);
+					strStatement = strStatement.substring(0, strStatement.length()-1);
+				}else{
+					strStatement += character;
+				}
+				break;
+				
+			case STAR:
+				if(last_character == BAR){
+					character = code.charAt(++i);
+					while((i+1) < code.length() && character != STAR && code.charAt(i+1) != BAR){
+						character = code.charAt(++i);
+					}
+					character = code.charAt(++i);//Retira a barra que estar por vir
+					strStatement = strStatement.substring(0, strStatement.length()-1);
+					strStatement+=BLANK_SPACE; //Isso pq eu testei case/**/STAR: funciona
+					strStatement.replaceAll(" ", " ");
+					
+				}else{
+					strStatement += character;
+				}
+				break;
 
+				
 			default:
 				strStatement += character;
 				break;
@@ -192,8 +222,7 @@ public class CodeAlgorithms {
 					markLastIfElseStatement = true;
 					lastIfElseWithoutElse = null;
 
-					// } else if (statementType == StatementType.FOR ||
-					// statementType == StatementType.WHILE) {
+					
 
 				} else {
 					// Add previous statements to the statement
