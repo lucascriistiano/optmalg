@@ -27,6 +27,8 @@ public class CodeAlgorithms {
 	public static final char BAR = '/';
 	public static final char REVERSED_BAR = '\\';
 	public static final char STAR = '*';
+	public static final char SINGLE_QUOTES = '\''; //is not being treated expressions within string
+	public static final char DOUBLE_QUOTES = '\"'; //is not being treated expressions within string
 
 	public static List<ProgramStatement> createProgramStatementList(String code) {
 		List<ProgramStatement> statements = new ArrayList<>();
@@ -107,7 +109,6 @@ public class CodeAlgorithms {
 					strStatement = strStatement.substring(0, strStatement.length()-1);
 					strStatement+=BLANK_SPACE; //Isso pq eu testei case/**/STAR: funciona
 					strStatement.replaceAll(" ", " ");
-					
 				}else{
 					strStatement += character;
 				}
@@ -154,6 +155,7 @@ public class CodeAlgorithms {
 
 		Stack<Boolean> markLastIfElseStatementStack = new Stack<>();
 		boolean markLastIfElseStatement = false;
+
 
 		for (int i = 0; i < programStatements.size(); i++) {
 			ProgramStatement programStatement = programStatements.get(i);
@@ -219,20 +221,50 @@ public class CodeAlgorithms {
 					currentLevelSequenceIDMap.remove(lastIfElseWithoutElse);
 					markLastIfElseStatement = true;
 					lastIfElseWithoutElse = null;
+				
+				}else if (statementType == StatementType.FOR || statementType == StatementType.WHILE) {
+					for (Map.Entry<ProgramStatement, Integer> entry : currentLevelSequenceIDMap.entrySet()) {
+						ProgramStatement mapProgramStatement = entry.getKey();
 
+						if(mapProgramStatement.getStatementType() == StatementType.FOR || mapProgramStatement.getStatementType() == StatementType.WHILE){
+							if(entry.getValue() == currentLevel){
+								programStatements.get(i).addPrevSequenceID(mapProgramStatement.getSequenceID());
+								currentLevelSequenceIDMap.remove(mapProgramStatement);
+								break;
+							}
+							
+						}else{
+							programStatements.get(i).addPrevSequenceID(mapProgramStatement.getSequenceID());
+						}
+						
+					}
+					
+					currentLevelSequenceIDMap.put(programStatement, currentLevel);
 					
 
 				} else {
 					// Add previous statements to the statement
 					for (Map.Entry<ProgramStatement, Integer> entry : currentLevelSequenceIDMap.entrySet()) {
 						ProgramStatement mapProgramStatement = entry.getKey();
-						programStatements.get(i).addPrevSequenceID(mapProgramStatement.getSequenceID());
+						
+						if(mapProgramStatement.getStatementType() == StatementType.FOR || mapProgramStatement.getStatementType() == StatementType.WHILE){
+							if(entry.getValue() == currentLevel){
+								programStatements.get(i).addPrevSequenceID(mapProgramStatement.getSequenceID());
+								currentLevelSequenceIDMap.remove(mapProgramStatement);
+								break;
+							}
+							
+						}else{
+							programStatements.get(i).addPrevSequenceID(mapProgramStatement.getSequenceID());
+						}
+						
 					}
 					// currentLevelSequenceIDMap.clear();
 
 					// Check if a if, elseif, else, for, while is open and check
 					// if is last instruction
-
+					
+					
 					lastCommonProgramStatement = programStatement;
 				}
 			}
