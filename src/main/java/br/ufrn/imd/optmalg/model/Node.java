@@ -36,6 +36,10 @@ public class Node {
 	public List<Node> getChildren() {
 		return this.children;
 	}
+	
+	public String getLabel() {
+		return this.label;
+	}
 
 	public boolean isVisited() {
 		return visited;

@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 import br.ufrn.imd.optmalg.model.BasicBlock;
 import br.ufrn.imd.optmalg.model.CFG;
-import br.ufrn.imd.optmalg.model.Edge;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
 
 public class Main {
@@ -25,11 +24,6 @@ public class Main {
 				CFG cfg = Optmalg.getCFG(basicBlocks);
 				System.out.println("===== CFG =====");
 				cfg.print();
-
-				System.out.println("===== Edges =====");
-				for(Edge e : cfg.getEdges()) {
-					System.out.println(e);
-				}
 			} catch (FileNotFoundException e) {
 				System.err.println("[ERROR] File " + filepath + " not found!");
 			}

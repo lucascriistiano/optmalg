@@ -330,28 +330,38 @@ public class CodeAlgorithms {
 
 		List<Node> nodeList = new ArrayList<>();
 		for (int i = 0; i < basicBlockList.size(); i++) {
-			Node node = new Node(basicBlockList.get(i).firstProgramStatement().getStatement(), basicBlockList.get(i));  //Blocks must not be empty
+			BasicBlock basicBlock = basicBlockList.get(i);
+			int firstStatementSequenceID = basicBlock.firstProgramStatement().getSequenceID();
+			int lastStatementSequenceID = basicBlock.lastProgramStatement().getSequenceID();
+			Node node = new Node(firstStatementSequenceID + ", " + lastStatementSequenceID, basicBlock);  //Blocks must not be empty
 			nodeList.add(node);
 		}
 		
 		cfg.createEdge(inNode, nodeList.get(0));
 		
-		for (int i = 0; i < nodeList.size(); i++) {
-			if (nodeList.get(i).getBasicBlock().hasStatement(StatementType.RETURN)) {
-				cfg.createEdge(nodeList.get(i), outNode);
+		for (Node node : nodeList) {
+			if (node.getBasicBlock().hasStatement(StatementType.RETURN)) {
+				cfg.createEdge(node, outNode);
 			}
 		}
 		
-		for (int i = 0; i < nodeList.size(); i++) {
-			BasicBlock basicBlockI = nodeList.get(i).getBasicBlock();
-			for (int j = 0; j < nodeList.size(); j++) {
-				if(i != j) {
-					BasicBlock basicBlockJ = nodeList.get(j).getBasicBlock();
-					if( basicBlockI.reaches(basicBlockJ)) {
-						cfg.createEdge(nodeList.get(i), nodeList.get(j));
+		for (Node nodeI : nodeList) {
+			BasicBlock basicBlockI = nodeI.getBasicBlock();
+			for (Node nodeJ : nodeList) {
+				if(!nodeI.equals(nodeJ)) {
+					BasicBlock basicBlockJ = nodeJ.getBasicBlock();
+					if(basicBlockI.reaches(basicBlockJ)) {
+						cfg.createEdge(nodeI, nodeJ);
 					}
 				}
 			}
+		}
+		
+		//Add nodes to CFG
+		cfg.addNode(inNode);
+		cfg.addNode(outNode);
+		for(Node node : nodeList) {
+			cfg.addNode(node);
 		}
 		
 		// etiquetarArestasCondicionais(gfc);

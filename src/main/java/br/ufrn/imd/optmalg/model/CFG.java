@@ -38,10 +38,7 @@ public class CFG {
 	 */
 	public void print() {
 		for (Node node : nodes) {
-			BasicBlock basicBlock = node.getBasicBlock();
-			int seqIDFirstStmt = basicBlock.firstProgramStatement().getSequenceID();
-			int seqIDLastStmt = basicBlock.lastProgramStatement().getSequenceID();
-			System.out.print("[" + seqIDFirstStmt + "," + seqIDLastStmt + "] -> ");
+			System.out.print("[" + node.getLabel() + "] -> ");
 
 			List<Node> childrenNodes = new ArrayList<>();
 			for (Edge edge : edges) {
@@ -51,10 +48,7 @@ public class CFG {
 			}
 
 			for (Node child : childrenNodes) {
-				BasicBlock childBasicBlock = child.getBasicBlock();
-				int seqIDFirstStmtChild = childBasicBlock.firstProgramStatement().getSequenceID();
-				int seqIDLastStmtChild = childBasicBlock.lastProgramStatement().getSequenceID();
-				System.out.print("[" + seqIDFirstStmtChild + "," + seqIDLastStmtChild + "], ");
+				System.out.print("[" + child.getLabel() + "] ");
 			}
 			System.out.println();
 		}
