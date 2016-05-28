@@ -57,10 +57,7 @@ public class ProgramStatement {
 				getStatementType() == StatementType.CONTINUE){
 			return true;
 		}
-		
 		return false;
-		
-
 	}
 
 	@Override

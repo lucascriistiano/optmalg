@@ -38,23 +38,23 @@ public class CFG {
 	 */
 	public void print() {
 		for (Node node : nodes) {
-			BasicBlock el = node.getBasicBlock();
-			int i = el.firstProgramStatement().getSequenceID();
-			int j = el.lastProgramStatement().getSequenceID();
-			System.out.print("[" + i + "," + j + "] -> ");
+			BasicBlock basicBlock = node.getBasicBlock();
+			int seqIDFirstStmt = basicBlock.firstProgramStatement().getSequenceID();
+			int seqIDLastStmt = basicBlock.lastProgramStatement().getSequenceID();
+			System.out.print("[" + seqIDFirstStmt + "," + seqIDLastStmt + "] -> ");
 
-			List<Node> nodeChildren = new ArrayList<>();
+			List<Node> childrenNodes = new ArrayList<>();
 			for (Edge edge : edges) {
 				if (edge.getOrigin().equals(node)) {
-					nodeChildren.add(edge.getDestination());
+					childrenNodes.add(edge.getDestination());
 				}
 			}
 
-			for (Node child : nodeChildren) {
-				BasicBlock elChild = child.getBasicBlock();
-				int ii = elChild.firstProgramStatement().getSequenceID();
-				int jj = elChild.lastProgramStatement().getSequenceID();
-				System.out.print("[" + ii + "," + jj + "], ");
+			for (Node child : childrenNodes) {
+				BasicBlock childBasicBlock = child.getBasicBlock();
+				int seqIDFirstStmtChild = childBasicBlock.firstProgramStatement().getSequenceID();
+				int seqIDLastStmtChild = childBasicBlock.lastProgramStatement().getSequenceID();
+				System.out.print("[" + seqIDFirstStmtChild + "," + seqIDLastStmtChild + "], ");
 			}
 			System.out.println();
 		}

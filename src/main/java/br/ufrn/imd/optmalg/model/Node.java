@@ -9,7 +9,8 @@ import java.util.List;
  */
 public class Node {
 
-	protected BasicBlock basicBlock;
+	private String label;
+	private BasicBlock basicBlock;
 	private List<Node> children;
 
 	protected boolean visited;
@@ -18,11 +19,12 @@ public class Node {
 	public double distance = Double.POSITIVE_INFINITY;
 	public Node predecessor = null;
 
-	public Node() {
-		this(new BasicBlock());
+	public Node(String label) {
+		this(label, new BasicBlock());
 	}
 
-	public Node(BasicBlock basicBlock) {
+	public Node(String label, BasicBlock basicBlock) {
+		this.label = label;
 		this.basicBlock = basicBlock;
 		this.children = new ArrayList<>();
 	}
@@ -53,7 +55,7 @@ public class Node {
 
 	@Override
 	public String toString() {
-		return this.basicBlock.toString();
+		return this.label;
 	}
 
 	@Override

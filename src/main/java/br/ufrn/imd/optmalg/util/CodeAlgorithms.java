@@ -325,43 +325,36 @@ public class CodeAlgorithms {
 	public static CFG getGFC(List<BasicBlock> basicBlockList) {
 		CFG cfg = new CFG();
 
-		Node inNode = new Node();
-		Node outNode = new Node();
+		Node inNode = new Node("IN");
+		Node outNode = new Node("OUT");
 
 		List<Node> nodeList = new ArrayList<>();
 		for (int i = 0; i < basicBlockList.size(); i++) {
-			Node node = new Node(basicBlockList.get(i));
+			Node node = new Node(basicBlockList.get(i).firstProgramStatement().getStatement(), basicBlockList.get(i));  //Blocks must not be empty
 			nodeList.add(node);
 		}
-
+		
 		cfg.createEdge(inNode, nodeList.get(0));
-
+		
 		for (int i = 0; i < nodeList.size(); i++) {
 			if (nodeList.get(i).getBasicBlock().hasStatement(StatementType.RETURN)) {
-				cfg.createEdge(nodeList.get(0), outNode);
+				cfg.createEdge(nodeList.get(i), outNode);
 			}
 		}
-
+		
 		for (int i = 0; i < nodeList.size(); i++) {
 			BasicBlock basicBlockI = nodeList.get(i).getBasicBlock();
-
 			for (int j = 0; j < nodeList.size(); j++) {
-				BasicBlock basicBlockJ = nodeList.get(j).getBasicBlock();
-
-				ProgramStatement firstProgramStatementBlockJ = basicBlockJ.firstProgramStatement();
-				ProgramStatement lastProgramStatementBlockI = basicBlockI.lastProgramStatement();
-				
-				if (firstProgramStatementBlockJ.getPrevSequenceIDs().contains(lastProgramStatementBlockI.getSequenceID())) {
-					cfg.createEdge(nodeList.get(i), nodeList.get(j));
-				} else if (j == i+1 && basicBlockI.lastProgramStatement().isUnconditionalGOTO()) {
-					cfg.createEdge(nodeList.get(i), nodeList.get(j));
+				if(i != j) {
+					BasicBlock basicBlockJ = nodeList.get(j).getBasicBlock();
+					if( basicBlockI.reaches(basicBlockJ)) {
+						cfg.createEdge(nodeList.get(i), nodeList.get(j));
+					}
 				}
 			}
 		}
-
-		// cfg.createEdge(outNode);
+		
 		// etiquetarArestasCondicionais(gfc);
-
 		return cfg;
 	}
 

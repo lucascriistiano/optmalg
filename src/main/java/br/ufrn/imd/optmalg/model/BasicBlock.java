@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
+
 import br.ufrn.imd.optmalg.model.StatementType;
 
 public class BasicBlock implements List<ProgramStatement> {
@@ -19,6 +21,10 @@ public class BasicBlock implements List<ProgramStatement> {
 		programStatements.add(statement);
 	}
 	
+	public List<ProgramStatement> getProgramStatements() {
+		return programStatements;
+	}
+	
 	public boolean hasStatement(StatementType searchedStatementType) {
 		for(ProgramStatement programStatement : programStatements) {
 			StatementType statementType = programStatement.getStatementType();
@@ -27,6 +33,26 @@ public class BasicBlock implements List<ProgramStatement> {
 			}
 		}
 		return false;
+	}
+	
+	public boolean reaches(BasicBlock destinationBasicBlock) {
+		List<Integer> sequenceIDs = this.getBlockStatementsSequenceIDs();
+		
+		List<ProgramStatement> destinationProgramStatements = destinationBasicBlock.getProgramStatements();
+		for(ProgramStatement destinationProgramStatement : destinationProgramStatements) {
+			List<Integer> destinationPrevSequenceIDs = destinationProgramStatement.getPrevSequenceIDs();
+			for(Integer prevSequenceID : sequenceIDs) {
+				if(destinationPrevSequenceIDs.contains(prevSequenceID)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public List<Integer> getBlockStatementsSequenceIDs() {
+		List<Integer> blockStatementsSequenceIDs = programStatements.stream().map(ps -> ps.getSequenceID()).collect(Collectors.toList());
+		return blockStatementsSequenceIDs;
 	}
 	
 	public ProgramStatement firstProgramStatement() {

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import br.ufrn.imd.optmalg.model.BasicBlock;
+import br.ufrn.imd.optmalg.model.CFG;
+import br.ufrn.imd.optmalg.model.Edge;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
 
 public class Main {
@@ -20,12 +22,14 @@ public class Main {
 			try {
 				List<ProgramStatement> programStatements = Optmalg.createProgramStatementList(filepath);
 				List<BasicBlock> basicBlocks = Optmalg.getBasicBlocks(programStatements);				
+				CFG cfg = Optmalg.getCFG(basicBlocks);
+				System.out.println("===== CFG =====");
+				cfg.print();
 
-				System.out.println("Blocos: " + basicBlocks.size());
-				for(BasicBlock basicBlock : basicBlocks) {
-					System.out.println(basicBlock);
+				System.out.println("===== Edges =====");
+				for(Edge e : cfg.getEdges()) {
+					System.out.println(e);
 				}
-				System.out.println();
 			} catch (FileNotFoundException e) {
 				System.err.println("[ERROR] File " + filepath + " not found!");
 			}
