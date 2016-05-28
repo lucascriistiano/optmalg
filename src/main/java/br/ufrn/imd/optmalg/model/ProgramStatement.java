@@ -53,8 +53,15 @@ public class ProgramStatement {
 	}
 	
 	public boolean isUnconditionalGOTO(){
-		//TODO Implement
+		if(getStatementType() == StatementType.RETURN || 
+				getStatementType() == StatementType.BREAK || 
+				getStatementType() == StatementType.CONTINUE){
+			return true;
+		}
+		
 		return false;
+		
+
 	}
 
 	@Override
