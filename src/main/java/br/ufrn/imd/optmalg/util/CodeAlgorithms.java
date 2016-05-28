@@ -171,12 +171,17 @@ public class CodeAlgorithms {
 				markLastIfElseStatementStack.push(markLastIfElseStatement);
 
 			} else if (statementType == StatementType.BLOCK_CLOSE) {
+				
+				
+				
 				// Add last instruction of block on previous list
 				if (markLastIfElseStatement && lastCommonProgramStatement != null) {
 					currentLevelSequenceIDMap.put(lastCommonProgramStatement, currentLevel);
 					// lastCommonProgramStatement = null;
 					markLastIfElseStatement = false;
 				}
+				
+			
 
 				// Add last if without else statement on map
 				if (lastIfElseWithoutElse != null) {
@@ -230,6 +235,7 @@ public class CodeAlgorithms {
 						if(mapProgramStatement.getStatementType() == StatementType.FOR || mapProgramStatement.getStatementType() == StatementType.WHILE){
 							if(entry.getValue() == currentLevel){
 								programStatements.get(i).addPrevSequenceID(mapProgramStatement.getSequenceID());
+								mapProgramStatement.addPrevSequenceID(programStatements.get(i).getSequenceID()-1);
 								currentLevelSequenceIDMap.remove(mapProgramStatement);
 								break;
 							}
@@ -251,6 +257,7 @@ public class CodeAlgorithms {
 						if(mapProgramStatement.getStatementType() == StatementType.FOR || mapProgramStatement.getStatementType() == StatementType.WHILE){
 							if(entry.getValue() == currentLevel){
 								programStatements.get(i).addPrevSequenceID(mapProgramStatement.getSequenceID());
+								mapProgramStatement.addPrevSequenceID(programStatements.get(i).getSequenceID()-1);
 								currentLevelSequenceIDMap.remove(mapProgramStatement);
 								break;
 							}
