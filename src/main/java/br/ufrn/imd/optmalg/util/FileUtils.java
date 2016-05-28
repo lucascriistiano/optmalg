@@ -22,7 +22,7 @@ public class FileUtils {
 		String line;
 		String fullcode = "";
 		while ((line = br.readLine()) != null) {
-			fullcode += line.trim();
+			fullcode += line + '\n';
 		}
 		
 		br.close();
