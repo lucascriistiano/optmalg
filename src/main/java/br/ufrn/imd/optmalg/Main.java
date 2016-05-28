@@ -1,5 +1,6 @@
 package br.ufrn.imd.optmalg;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,15 +17,18 @@ public class Main {
 		for(int i = 0; i < filepaths.length; i++) {
 			String filepath = filepaths[i];
 			System.out.println("[INFO] Processing file " + filepath);
-			
-			List<ProgramStatement> programStatements = Optmalg.createProgramStatementList(filepath);
-			List<BasicBlock> basicBlocks = Optmalg.getBasicBlocks(programStatements);
-			
-			System.out.println("Blocos: " + basicBlocks.size());
-			for(BasicBlock basicBlock : basicBlocks) {
-				System.out.println(basicBlock);
+			try {
+				List<ProgramStatement> programStatements = Optmalg.createProgramStatementList(filepath);
+				List<BasicBlock> basicBlocks = Optmalg.getBasicBlocks(programStatements);				
+
+				System.out.println("Blocos: " + basicBlocks.size());
+				for(BasicBlock basicBlock : basicBlocks) {
+					System.out.println(basicBlock);
+				}
+				System.out.println();
+			} catch (FileNotFoundException e) {
+				System.err.println("[ERROR] File " + filepath + " not found!");
 			}
-			System.out.println();
 		}
 	}
 

@@ -2,6 +2,7 @@ package br.ufrn.imd.optmalg;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.Test;
@@ -17,7 +18,7 @@ public class OptmalgTest {
 	
 	@Test
 	@Parameters(method = "createStatementListParams")
-	public void testCreateStatementList(String filepath, int numberOfStatements, String[] expectedStatements, int[][] statementsPrevious) {
+	public void testCreateStatementList(String filepath, int numberOfStatements, String[] expectedStatements, int[][] statementsPrevious) throws FileNotFoundException {
 		List<ProgramStatement> programStatements = Optmalg.createProgramStatementList(filepath);
 		assertEquals(numberOfStatements, programStatements.size());
 
@@ -38,7 +39,7 @@ public class OptmalgTest {
 	
 	@Test
 	@Parameters(method="getBasicBlocksParams")
-	public void testGetBasicBlocks(String filepath, int numberOfBlocks, String[][] blocks) {
+	public void testGetBasicBlocks(String filepath, int numberOfBlocks, String[][] blocks) throws FileNotFoundException {
 		List<ProgramStatement> programStatements = Optmalg.createProgramStatementList(filepath);
 		
 		List<BasicBlock> basicblocks = Optmalg.getBasicBlocks(programStatements);
