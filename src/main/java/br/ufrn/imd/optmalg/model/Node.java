@@ -1,8 +1,6 @@
 package br.ufrn.imd.optmalg.model;
-// import java.util.ArrayList;
 
-// import java.util.List;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +10,7 @@ import java.util.List;
 public class Node {
 
 	protected BasicBlock basicBlock;
+	private List<Node> children;
 
 	protected boolean visited;
 	public Integer index = null;
@@ -19,17 +18,17 @@ public class Node {
 	public double distance = Double.POSITIVE_INFINITY;
 	public Node predecessor = null;
 
-	private List<Node> children;
-
 	public Node() {
+		this(new BasicBlock());
 	}
 
 	public Node(BasicBlock basicBlock) {
 		this.basicBlock = basicBlock;
+		this.children = new ArrayList<>();
 	}
 
 	public void addChild(Node node) {
-		children.add(node);
+		this.children.add(node);
 	}
 
 	public List<Node> getChildren() {
