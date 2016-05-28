@@ -1,5 +1,6 @@
 package br.ufrn.imd.optmalg;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -11,13 +12,12 @@ import br.ufrn.imd.optmalg.util.FileUtils;
 
 public class Optmalg {
 
-	public static List<ProgramStatement> createProgramStatementList(String filepath) {
+	public static List<ProgramStatement> createProgramStatementList(String filepath) throws FileNotFoundException {
 		String strProgramStatements = "";
 		try {
 			strProgramStatements = FileUtils.readFullStatements(filepath);
 		} catch (IOException e) {
-			System.err.println("[ERROR] File " + filepath + " not Found!");
-			return null;
+			throw new FileNotFoundException();
 		}
 
 		return CodeAlgorithms.createProgramStatementList(strProgramStatements);

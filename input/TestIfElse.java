@@ -1,6 +1,6 @@
 package br.ufrn.imd;                                    //00 []
 
-public class TestSimple {                               //01 [0]
+public class TestIfElse {                               //01 [0]
 
     public static void main(String[] args) {            //02 [1]
         int a = 3;                                      //03 [2]

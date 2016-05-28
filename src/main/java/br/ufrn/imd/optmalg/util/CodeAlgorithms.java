@@ -1,6 +1,7 @@
 package br.ufrn.imd.optmalg.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -276,6 +277,10 @@ public class CodeAlgorithms {
 				}
 			}
 
+		}
+		
+		for (int i = 0; i < programStatements.size(); i++) {
+			Collections.sort(programStatements.get(i).getPrevSequenceIDs());
 		}
 
 		return programStatements;
