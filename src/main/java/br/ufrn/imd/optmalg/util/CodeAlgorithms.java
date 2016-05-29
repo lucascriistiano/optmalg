@@ -1,6 +1,7 @@
 package br.ufrn.imd.optmalg.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Pattern;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 import br.ufrn.imd.optmalg.model.BasicBlock;
 import br.ufrn.imd.optmalg.model.CFG;
@@ -313,8 +316,8 @@ public class CodeAlgorithms {
 	public static CFG getGFC(List<BasicBlock> basicBlockList) {
 		CFG cfg = new CFG();
 
-		Node inNode = new Node("IN");
-		Node outNode = new Node("OUT");
+		Node entryNode = new Node("ENTRY");
+		Node exitNode = new Node("EXIT");
 
 		List<Node> nodeList = new ArrayList<>();
 		for (int i = 0; i < basicBlockList.size(); i++) {
@@ -325,11 +328,11 @@ public class CodeAlgorithms {
 			nodeList.add(node);
 		}
 		
-		cfg.createEdge(inNode, nodeList.get(0));
+		cfg.createEdge(entryNode, nodeList.get(0));
 		
 		for (Node node : nodeList) {
 			if (node.getBasicBlock().hasStatement(StatementType.RETURN)) {
-				cfg.createEdge(node, outNode);
+				cfg.createEdge(node, exitNode);
 			}
 		}
 		
@@ -346,23 +349,84 @@ public class CodeAlgorithms {
 		}
 		
 		//Add nodes to CFG
-		cfg.addNode(inNode);
+		cfg.setEntryNode(entryNode);
+		
 		for(Node node : nodeList) {
 			cfg.addNode(node);
 		}
 		
-		//Creates edges to OUT node
+		//Creates edges to EXIT node
 		for(Node node : cfg.getNodes()){
 			if(node.getChildren().isEmpty()){
-				cfg.createEdge(node, outNode);
+				cfg.createEdge(node, exitNode);
 			}
 		}
 		
-		//Add out node
-		cfg.addNode(outNode);
+		//Add EXIT node
+		cfg.setExitNode(exitNode);
 		
 		// etiquetarArestasCondicionais(gfc);
+		
+		calculateDominators(cfg);
+		
 		return cfg;
+	}
+	
+	public static void calculateDominators(CFG cfg) {
+		Node entryNode = cfg.getEntryNode();
+		entryNode.addDominator(entryNode);
+		
+		for(Node nodeI : cfg.getNodes()) {
+			if(!nodeI.equals(entryNode)) {
+				nodeI.setDominators(cfg.getNodes());
+			}
+		}
+		
+		boolean changed = true;
+		while(changed) {
+			changed = false;
+			for(Node node : cfg.getNodes()) {
+				if(!node.equals(entryNode)) {
+					List<Node> imediatePredecessors = cfg.getImediatePredecessors(node); //TODO Is it possible to calculate only once? Where to place it?
+					
+					List<Node> imediatePredDominatorsIntersection = null;
+					for(Node imediatePredecessor : imediatePredecessors) {
+						if(imediatePredDominatorsIntersection == null) {
+							imediatePredDominatorsIntersection = imediatePredecessor.getDominators();
+						} else {
+							imediatePredDominatorsIntersection = (List<Node>) CollectionUtils.intersection(imediatePredDominatorsIntersection, imediatePredecessor.getDominators());
+						}
+					}
+
+					List<Node> newDominators = (List<Node>) CollectionUtils.union(Arrays.asList(node),
+																				  imediatePredDominatorsIntersection);
+					if(!equalNodeLists(node.getDominators(), newDominators)) {
+						changed = true;
+						node.setDominators(newDominators);
+					}
+				}
+			}
+		}
+	}
+	
+	private static  boolean equalNodeLists(List<Node> firstList, List<Node> secondList){     
+	    if (firstList == null && secondList == null){
+	        return true;
+	    }
+
+	    if((firstList == null && secondList != null) 
+	      || firstList != null && secondList == null
+	      || firstList.size() != secondList.size()){
+	        return false;
+	    }
+
+	    for(Node node : firstList) {
+	    	if(!secondList.contains(node)) {
+	    		return false;
+	    	}
+	    }
+	    
+	    return true;
 	}
 
 	public static StatementType processStatementType(String statement) {

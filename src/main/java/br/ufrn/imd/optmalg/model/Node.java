@@ -12,6 +12,7 @@ public class Node {
 	private String label;
 	private BasicBlock basicBlock;
 	private List<Node> children;
+	private List<Node> dominators;
 
 	protected boolean visited;
 	public Integer index = null;
@@ -27,18 +28,39 @@ public class Node {
 		this.label = label;
 		this.basicBlock = basicBlock;
 		this.children = new ArrayList<>();
+		this.dominators = new ArrayList<>();
 	}
 
 	public void addChild(Node node) {
 		this.children.add(node);
 	}
+	
+	public void setDominators(List<Node> dominators) {
+		this.dominators = dominators;
+	}
+	
+	public void addDominator(Node node) {
+		this.dominators.add(node);
+	}
+	
+	public void removeDominator(Node node) {
+		this.dominators.remove(node);
+	}
 
+	public String getLabel() {
+		return this.label;
+	}
+	
+	public BasicBlock getBasicBlock() {
+		return this.basicBlock;
+	}
+	
 	public List<Node> getChildren() {
 		return this.children;
 	}
 	
-	public String getLabel() {
-		return this.label;
+	public List<Node> getDominators() {
+		return dominators;
 	}
 
 	public boolean isVisited() {
@@ -53,24 +75,40 @@ public class Node {
 		visited = false;
 	}
 
-	public BasicBlock getBasicBlock() {
-		return this.basicBlock;
+	@Override
+	public String toString() {
+		return "(" + this.label + ")";
 	}
 
 	@Override
-	public String toString() {
-		return this.label;
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((basicBlock == null) ? 0 : basicBlock.hashCode());
+		result = prime * result + ((label == null) ? 0 : label.hashCode());
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Node))
-			return false;
-		if (obj == this)
+		if (this == obj)
 			return true;
-
-		Node node = (Node) obj;
-		return this.basicBlock.equals(node.getBasicBlock());
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Node other = (Node) obj;
+		if (basicBlock == null) {
+			if (other.basicBlock != null)
+				return false;
+		} else if (!basicBlock.equals(other.basicBlock))
+			return false;
+		if (label == null) {
+			if (other.label != null)
+				return false;
+		} else if (!label.equals(other.label))
+			return false;
+		return true;
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import br.ufrn.imd.optmalg.model.BasicBlock;
 import br.ufrn.imd.optmalg.model.CFG;
+import br.ufrn.imd.optmalg.model.Node;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
 
 public class Main {
@@ -22,8 +23,14 @@ public class Main {
 				List<ProgramStatement> programStatements = Optmalg.createProgramStatementList(filepath);
 				List<BasicBlock> basicBlocks = Optmalg.getBasicBlocks(programStatements);
 				CFG cfg = Optmalg.getCFG(basicBlocks);
+				
 				System.out.println("===== CFG =====");
 				cfg.print();
+				
+				System.out.println("===== DOMINATORS =====");
+				for(Node n : cfg.getNodes()) {
+					System.out.println(n + " <--D-- " + n.getDominators());
+				}
 			} catch (FileNotFoundException e) {
 				System.err.println("[ERROR] File " + filepath + " not found!");
 			}

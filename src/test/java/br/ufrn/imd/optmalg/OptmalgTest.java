@@ -56,6 +56,15 @@ public class OptmalgTest {
 			}
 		}
 	}
+	
+	@Test
+	@Parameters(method="getCFGParams")
+	public void testGetCFG(String filepath, int numberOfNodes, int numberOfEdges) {
+		
+		
+		
+	}
+	
 
 	public Object[] createStatementListParams() {
 		return new Object[]{
