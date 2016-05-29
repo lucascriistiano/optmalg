@@ -20,7 +20,7 @@ public class Main {
 			System.out.println("[INFO] Processing file " + filepath);
 			try {
 				List<ProgramStatement> programStatements = Optmalg.createProgramStatementList(filepath);
-				List<BasicBlock> basicBlocks = Optmalg.getBasicBlocks(programStatements);				
+				List<BasicBlock> basicBlocks = Optmalg.getBasicBlocks(programStatements);
 				CFG cfg = Optmalg.getCFG(basicBlocks);
 				System.out.println("===== CFG =====");
 				cfg.print();

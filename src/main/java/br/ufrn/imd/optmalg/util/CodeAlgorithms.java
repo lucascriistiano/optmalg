@@ -291,29 +291,17 @@ public class CodeAlgorithms {
 
 		BasicBlock currentBasicBlock = new BasicBlock();
 		for (ProgramStatement programStatement : programStatements) {
-			if (programStatement.getStatement().equals(String.valueOf(BLOCK_OPEN))) {
-				int lastStatementIndex = currentBasicBlock.size() - 1;
-				ProgramStatement lastProgramStatement = currentBasicBlock.get(lastStatementIndex);
-				currentBasicBlock.remove(lastStatementIndex);
-
-				if (currentBasicBlock.size() > 0) {
-					basicBlocksList.add(currentBasicBlock);
-				}
-
+			if (programStatement.isGOTO()) {
+				currentBasicBlock.add(programStatement);
+				basicBlocksList.add(currentBasicBlock);
 				currentBasicBlock = new BasicBlock();
-				currentBasicBlock.add(lastProgramStatement);
-
+			} else if (programStatement.getStatement().equals(String.valueOf(BLOCK_OPEN))) {
+				//Do nothing
 			} else if (programStatement.getStatement().equals(String.valueOf(BLOCK_CLOSE))) {
 				if (currentBasicBlock.size() > 0) {
 					basicBlocksList.add(currentBasicBlock);
 					currentBasicBlock = new BasicBlock();
 				}
-
-				// //Add an empty basic block to represent block group closing
-				// currentBasicBlock = new BasicBlock();
-				// basicBlocksList.add(currentBasicBlock);
-
-				// currentBasicBlock = new BasicBlock();
 			} else {
 				currentBasicBlock.add(programStatement);
 			}
