@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
@@ -17,6 +19,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import br.ufrn.imd.optmalg.model.BasicBlock;
 import br.ufrn.imd.optmalg.model.CFG;
 import br.ufrn.imd.optmalg.model.Node;
+import br.ufrn.imd.optmalg.model.Path;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
 import br.ufrn.imd.optmalg.model.StatementType;
 import br.ufrn.imd.optmalg.model.dtree.DTree;
@@ -451,6 +454,38 @@ public class CodeAlgorithms {
 		}
 		
 		return dTree;
+	}
+	
+	private static void findPaths(CFG cfg, Node origin, Node destiny, Stack<Node> path, Set<Node> onPath, List<Path> foundPaths) {
+        // Add node origin node on current path
+        path.push(origin);
+        onPath.add(origin);
+
+        // Adds to list a found path to destiny
+        if (origin.equals(destiny)) { 
+            foundPaths.add(new Path(path));
+        } else { 
+        	// Executes recursively for all children that would continue path without repeating a node
+            for (Node child : origin.getChildren()) {
+                if (!onPath.contains(child) || child.getBasicBlock().hasGOTOStatement()) {
+                	findPaths(cfg, child, destiny, path, onPath, foundPaths);
+                }
+            }
+        }
+
+        // Finished exploration from origin, so 
+        path.pop();
+        onPath.remove(origin);
+	}
+	
+	public static List<Path> findExecutionPaths(CFG cfg) {
+	    Stack<Node> path = new Stack<>();   // the current path
+	    Set<Node> onPath = new HashSet<>(); // the set of vertices on the path
+	    
+	    List<Path> foundPaths = new ArrayList<>();
+	    findPaths(cfg, cfg.getEntryNode(), cfg.getExitNode(), path, onPath, foundPaths);
+	    
+	    return foundPaths;
 	}
 	
 	private static  boolean equalNodeLists(List<Node> firstList, List<Node> secondList){     

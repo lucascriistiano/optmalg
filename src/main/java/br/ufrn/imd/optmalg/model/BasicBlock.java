@@ -38,6 +38,15 @@ public class BasicBlock implements List<ProgramStatement>, Serializable {
 		return false;
 	}
 	
+	public boolean hasGOTOStatement() {
+		for(ProgramStatement programStatement : programStatements) {
+			if(programStatement.isGOTO()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean reaches(BasicBlock destinationBasicBlock) {
 		List<Integer> sequenceIDs = this.getBlockStatementsSequenceIDs();
 		
@@ -187,14 +196,5 @@ public class BasicBlock implements List<ProgramStatement>, Serializable {
         
         return true;
     }
-	
-//	@Override
-//	public BasicBlock clone() {
-//		BasicBlock basicBlockClone = new BasicBlock();
-//		for(ProgramStatement programStatement : this.programStatements) {
-//			basicBlockClone.add(programStatement.clone());	
-//		}
-//		return basicBlockClone;
-//	}
 	
 }
