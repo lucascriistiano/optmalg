@@ -45,9 +45,16 @@ public class ProgramStatement {
 		
 		return this.statementType;
 	}
-	
+
 	public boolean isGOTO(){
-		//TODO Implement
+		if(isUnconditionalGOTO() || 
+				getStatementType() == StatementType.IF || 
+				getStatementType() == StatementType.ELSE_IF || 
+				getStatementType() == StatementType.FOR || 
+				getStatementType() == StatementType.WHILE || 
+				getStatementType() == StatementType.SWITCH){
+			return true;
+		}
 		return false;
 	}
 	
