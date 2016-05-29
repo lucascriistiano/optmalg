@@ -449,8 +449,42 @@ public class CodeAlgorithms {
 				}
 			}
 		}
+
+		treeToList(dTree.getDNodeList(), dTree.getRoot());
+		System.err.println(dTree.getDNodeList().size());
 		
 		return dTree;
+	}
+	
+	private static void treeToList(List<DTreeNode> dNodes, DTreeNode dnode){
+		for(DTreeNode dnodeChild : dnode.getChildren()){
+			if(!dNodes.contains(dnodeChild)){
+				dNodes.add(dnodeChild);
+				treeToList(dNodes, dnodeChild);
+			}
+		}
+	}
+	
+	public static List<CFG> findNaturalLoops(DTree dTree){
+		List<CFG> naturalLoops = new ArrayList<CFG>();
+		for(DTreeNode hdNode : dTree.getDNodeList()){
+			for(DTreeNode ndNode : dTree.getDNodeList()){
+				if(dTree.backEdgeExits(ndNode, hdNode)){ // Talvez não funcione
+					CFG loop = new CFG();
+					loop.createEdge(ndNode.getCfgNode(), hdNode.getCfgNode());
+					loop.addNode(ndNode.getCfgNode()); 
+					loop.addNode(hdNode.getCfgNode());
+					
+//					for( ; ; ){
+//						
+//					}
+					naturalLoops.add(loop);
+				}
+			}
+		}
+		
+		
+		return naturalLoops;
 	}
 	
 	private static  boolean equalNodeLists(List<Node> firstList, List<Node> secondList){     

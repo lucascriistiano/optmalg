@@ -27,6 +27,18 @@ public class Edge implements Serializable {
 	public Node getDestination() {
 		return destination;
 	}
+	
+	public boolean isBackEdge(){
+		if(getOrigin().getBasicBlock().size() > 0 && getDestination().getBasicBlock().size() > 0){
+			int originPosition = getOrigin().getBasicBlock().get(0).getSequenceID();
+			int destinationPosition = getDestination().getBasicBlock().get(0).getSequenceID();
+			if(originPosition > destinationPosition){
+				return true;
+			}
+		}
+		return false;
+		
+	}
 
 	public double getWeight() {
 		return weight;
