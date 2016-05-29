@@ -15,6 +15,10 @@ public class CFG {
 		this.nodes = new ArrayList<>();
 		this.edges = new ArrayList<>();
 	}
+	
+	public boolean isEmpty(){
+		return nodes.isEmpty();
+	}
 
 	public void addNode(Node node) {
 		this.nodes.add(node);

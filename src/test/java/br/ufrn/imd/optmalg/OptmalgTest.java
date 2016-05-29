@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.ufrn.imd.optmalg.model.BasicBlock;
+import br.ufrn.imd.optmalg.model.CFG;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -59,10 +60,17 @@ public class OptmalgTest {
 	
 	@Test
 	@Parameters(method="getCFGParams")
-	public void testGetCFG(String filepath, int numberOfNodes, int numberOfEdges) {
+	public void testGetCFG(String filepath, int numberOfNodes, int numberOfEdges) throws FileNotFoundException {
+		List<ProgramStatement> programStatements = Optmalg.createProgramStatementList(filepath);
+		
+		List<BasicBlock> basicblocks = Optmalg.getBasicBlocks(programStatements);
+		CFG cfg = Optmalg.getCFG(basicblocks);
 		
 		
-		
+		assertFalse("CFG is empty", cfg.isEmpty());
+		assertEquals("Different number of Nodes", numberOfNodes, cfg.getNodes().size());
+		assertEquals("Different number of Edges", numberOfEdges, cfg.getEdges().size());
+
 	}
 	
 
@@ -136,6 +144,20 @@ public class OptmalgTest {
 																	      {"a = b + 1"},
 																	      {"System.out.println(\"Finished\")"}
 																		}}
+		};
+	}
+
+	
+	public Object[] getCFGParams() {
+		return new Object[] {
+				new Object[]{"input/TestFor2.java", 7, 8},
+				new Object[]{"input/TestFor.java", 5, 5},
+				new Object[]{"input/TestIfElse3.java", 15, 19},
+				new Object[]{"input/TestIgnoreFormattingAndComments.java", 14, 19},
+				new Object[]{"input/TestForIf.java", 13, 17},
+				new Object[]{"input/TestIfElse2.java", 11, 16},
+				new Object[]{"input/TestIfElse.java", 8, 9},
+				new Object[]{"input/TestLinearCode.java", 3, 2}
 		};
 	}
 
