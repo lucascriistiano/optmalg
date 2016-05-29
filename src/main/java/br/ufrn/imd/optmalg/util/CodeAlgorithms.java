@@ -352,6 +352,12 @@ public class CodeAlgorithms {
 			cfg.addNode(node);
 		}
 		
+		for(Node node : cfg.getNodes()){
+			if(node.getChildren().isEmpty()){
+				cfg.createEdge(node, outNode);
+			}
+		}
+		
 		// etiquetarArestasCondicionais(gfc);
 		return cfg;
 	}
