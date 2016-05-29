@@ -11,7 +11,7 @@ public class TestIfElse2 {                                   //01 [0]
                 if (true) {                                  //06 [5]
 
 
-                    if(true) {                               //07 [6]
+                    if (true) {                              //07 [6]
 
 
                         System.out.println("True");          //08 [7]
