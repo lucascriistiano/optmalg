@@ -423,17 +423,19 @@ public class CodeAlgorithms {
 		Queue<DTreeNode> queue = new LinkedList<>();
 		queue.add(root);		
 
-		for(Node node : cfgCopy.getNodes()) {
+		for(Iterator<Node> it = cfgCopy.getNodes().iterator(); it.hasNext();) {
+			Node node = it.next();
 			node.removeDominator(node);
 		}
 		
 		while(!queue.isEmpty()) {
 			DTreeNode dNode = queue.remove();
 			
-			for(Node node : cfgCopy.getNodes()) {
+			for(Iterator<Node> it = cfgCopy.getNodes().iterator(); it.hasNext();) {
+				Node node = it.next();
+				
 				List<Node> nodeDominators = node.getDominators();
 				if(!nodeDominators.isEmpty()) {
-					
 					Node cfgNode = dNode.getCfgNode();
 					if(nodeDominators.contains(cfgNode)) {
 						node.removeDominator(cfgNode);
