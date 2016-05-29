@@ -347,16 +347,19 @@ public class CodeAlgorithms {
 		
 		//Add nodes to CFG
 		cfg.addNode(inNode);
-		cfg.addNode(outNode);
 		for(Node node : nodeList) {
 			cfg.addNode(node);
 		}
 		
+		//Creates edges to OUT node
 		for(Node node : cfg.getNodes()){
 			if(node.getChildren().isEmpty()){
 				cfg.createEdge(node, outNode);
 			}
 		}
+		
+		//Add out node
+		cfg.addNode(outNode);
 		
 		// etiquetarArestasCondicionais(gfc);
 		return cfg;
