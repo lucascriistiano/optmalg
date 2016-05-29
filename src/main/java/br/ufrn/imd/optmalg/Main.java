@@ -7,6 +7,7 @@ import java.util.Scanner;
 import br.ufrn.imd.optmalg.model.BasicBlock;
 import br.ufrn.imd.optmalg.model.CFG;
 import br.ufrn.imd.optmalg.model.Node;
+import br.ufrn.imd.optmalg.model.Path;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
 import br.ufrn.imd.optmalg.model.dtree.DTree;
 import br.ufrn.imd.optmalg.util.CodeAlgorithms;
@@ -36,6 +37,13 @@ public class Main {
 				System.out.println("===== DTREE =====");
 				DTree dTree = CodeAlgorithms.createDTree(cfg);
 				dTree.print();
+				
+				System.out.println("===== PATHS =====");
+				List<Path> executionPaths = CodeAlgorithms.findExecutionPaths(cfg);
+				for(Path executionPath : executionPaths) {
+					executionPath.print();
+				}
+				
 			} catch (FileNotFoundException e) {
 				System.err.println("[ERROR] File " + filepath + " not found!");
 			}
