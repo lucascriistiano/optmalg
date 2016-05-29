@@ -1,5 +1,6 @@
 package br.ufrn.imd.optmalg.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +8,10 @@ import java.util.List;
  * Code adapted from http://learn.yancyparedes.net/2012/03/my-graph-implementation-in-java/
  *
  */
-public class Node {
+public class Node implements Serializable {
 
+	private static final long serialVersionUID = 2615190811533950656L;
+	
 	private String label;
 	private BasicBlock basicBlock;
 	private List<Node> children;

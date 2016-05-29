@@ -1,12 +1,15 @@
 package br.ufrn.imd.optmalg.model;
 
 import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import br.ufrn.imd.optmalg.model.StatementType;
 import br.ufrn.imd.optmalg.util.CodeAlgorithms;
 
-public class ProgramStatement {
+public class ProgramStatement implements Serializable {
+	
+	private static final long serialVersionUID = -1565368800515039491L;
 	
 	private String statement;
 	private int sequenceID;
@@ -88,5 +91,14 @@ public class ProgramStatement {
         
         return true;
     }
+	
+	@Override
+	public ProgramStatement clone() {
+		ProgramStatement programStatementClone = new ProgramStatement(this.sequenceID, new String(this.getStatement()));
+		for(Integer prevSequenceID : this.prevSequenceIDList) {
+			programStatementClone.addPrevSequenceID(prevSequenceID.intValue());
+		}
+		return programStatementClone;
+	}
 	
 }

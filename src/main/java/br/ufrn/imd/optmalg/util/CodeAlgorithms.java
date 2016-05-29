@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
@@ -17,6 +19,8 @@ import br.ufrn.imd.optmalg.model.CFG;
 import br.ufrn.imd.optmalg.model.Node;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
 import br.ufrn.imd.optmalg.model.StatementType;
+import br.ufrn.imd.optmalg.model.dtree.DTree;
+import br.ufrn.imd.optmalg.model.dtree.DTreeNode;
 
 public class CodeAlgorithms {
 
@@ -407,6 +411,44 @@ public class CodeAlgorithms {
 				}
 			}
 		}
+	}
+
+	public static DTree createDTree(CFG cfg) {
+		CFG cfgCopy = cfg.clone();
+		
+		DTree dTree = new DTree();
+		DTreeNode root = new DTreeNode(cfg.getEntryNode());
+		dTree.setRoot(root);
+		
+		Queue<DTreeNode> queue = new LinkedList<>();
+		queue.add(root);		
+
+		for(Node node : cfgCopy.getNodes()) {
+			node.removeDominator(node);
+		}
+		
+		while(!queue.isEmpty()) {
+			DTreeNode dNode = queue.remove();
+			
+			for(Node node : cfgCopy.getNodes()) {
+				List<Node> nodeDominators = node.getDominators();
+				if(!nodeDominators.isEmpty()) {
+					
+					Node cfgNode = dNode.getCfgNode();
+					if(nodeDominators.contains(cfgNode)) {
+						node.removeDominator(cfgNode);
+						
+						if(nodeDominators.isEmpty()) {
+							DTreeNode newDTreeNode = new DTreeNode(node);
+							dNode.addChild(newDTreeNode);
+							queue.add(newDTreeNode);
+						}
+					}
+				}
+			}
+		}
+		
+		return dTree;
 	}
 	
 	private static  boolean equalNodeLists(List<Node> firstList, List<Node> secondList){     

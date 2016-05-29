@@ -1,5 +1,6 @@
 package br.ufrn.imd.optmalg.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,8 +10,10 @@ import java.util.stream.Collectors;
 
 import br.ufrn.imd.optmalg.model.StatementType;
 
-public class BasicBlock implements List<ProgramStatement> {
+public class BasicBlock implements List<ProgramStatement>, Serializable {
 
+	private static final long serialVersionUID = -7182237059988564862L;
+	
 	private List<ProgramStatement> programStatements;
 
 	public BasicBlock() {
@@ -184,5 +187,14 @@ public class BasicBlock implements List<ProgramStatement> {
         
         return true;
     }
+	
+//	@Override
+//	public BasicBlock clone() {
+//		BasicBlock basicBlockClone = new BasicBlock();
+//		for(ProgramStatement programStatement : this.programStatements) {
+//			basicBlockClone.add(programStatement.clone());	
+//		}
+//		return basicBlockClone;
+//	}
 	
 }

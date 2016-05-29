@@ -8,6 +8,8 @@ import br.ufrn.imd.optmalg.model.BasicBlock;
 import br.ufrn.imd.optmalg.model.CFG;
 import br.ufrn.imd.optmalg.model.Node;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
+import br.ufrn.imd.optmalg.model.dtree.DTree;
+import br.ufrn.imd.optmalg.util.CodeAlgorithms;
 
 public class Main {
 
@@ -23,7 +25,6 @@ public class Main {
 				List<ProgramStatement> programStatements = Optmalg.createProgramStatementList(filepath);
 				List<BasicBlock> basicBlocks = Optmalg.getBasicBlocks(programStatements);
 				CFG cfg = Optmalg.getCFG(basicBlocks);
-				
 				System.out.println("===== CFG =====");
 				cfg.print();
 				
@@ -31,6 +32,10 @@ public class Main {
 				for(Node n : cfg.getNodes()) {
 					System.out.println(n + " <--D-- " + n.getDominators());
 				}
+				
+				System.out.println("===== DTREE =====");
+				DTree dTree = CodeAlgorithms.createDTree(cfg);
+				dTree.print();
 			} catch (FileNotFoundException e) {
 				System.err.println("[ERROR] File " + filepath + " not found!");
 			}

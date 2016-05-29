@@ -1,7 +1,11 @@
 package br.ufrn.imd.optmalg.model;
 
-public class Edge {
+import java.io.Serializable;
 
+public class Edge implements Serializable {
+
+	private static final long serialVersionUID = 751129475652565572L;
+	
 	private Node origin;
 	private Node destination;
 	private double weight;

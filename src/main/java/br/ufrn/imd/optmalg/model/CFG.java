@@ -1,10 +1,15 @@
 package br.ufrn.imd.optmalg.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CFG {
+import org.apache.commons.lang3.SerializationUtils;
 
+public class CFG implements Serializable, Cloneable {
+
+	private static final long serialVersionUID = 8327870543374459624L;
+	
 	private List<Node> nodes;
 	private List<Edge> edges;
 	
@@ -15,7 +20,7 @@ public class CFG {
 		this.nodes = new ArrayList<>();
 		this.edges = new ArrayList<>();
 	}
-	
+
 	public boolean isEmpty(){
 		return nodes.isEmpty();
 	}
@@ -79,7 +84,11 @@ public class CFG {
 			}
 			System.out.println();
 		}
-
+	}
+	
+	@Override
+	public CFG clone() {
+		return SerializationUtils.clone(this);
 	}
 
 }
