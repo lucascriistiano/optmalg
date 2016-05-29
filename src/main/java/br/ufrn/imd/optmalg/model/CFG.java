@@ -39,15 +39,7 @@ public class CFG {
 	public void print() {
 		for (Node node : nodes) {
 			System.out.print("[" + node.getLabel() + "] -> ");
-
-			List<Node> childrenNodes = new ArrayList<>();
-			for (Edge edge : edges) {
-				if (edge.getOrigin().equals(node)) {
-					childrenNodes.add(edge.getDestination());
-				}
-			}
-
-			for (Node child : childrenNodes) {
+			for (Node child : node.getChildren()) {
 				System.out.print("[" + child.getLabel() + "] ");
 			}
 			System.out.println();
