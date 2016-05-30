@@ -30,6 +30,10 @@ public class ProgramStatement implements Serializable {
 		return sequenceID;
 	}
 
+	public void setPrevSequenceIDs(List<Integer> prevSequenceIDList) {
+		this.prevSequenceIDList = prevSequenceIDList;
+	}
+	
 	public void addPrevSequenceID(Integer prevSequenceID) {
 		this.prevSequenceIDList.add(prevSequenceID);
 	}

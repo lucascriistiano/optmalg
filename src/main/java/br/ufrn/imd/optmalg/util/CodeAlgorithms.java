@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
@@ -154,121 +155,171 @@ public class CodeAlgorithms {
 			}
 		}
 
-		Stack<Map<ProgramStatement, Integer>> levelsPreviousSequenceIDStack = new Stack<>();
-		Map<ProgramStatement, Integer> currentLevelSequenceIDMap = new HashMap<ProgramStatement, Integer>();
-		
 		int currentLevel = 0;
+		Stack<Map<ProgramStatement, Integer>> stackLevelsPreviousSequenceIDs = new Stack<>();
+		Map<ProgramStatement, Integer> currentLevelPreviousSequenceIDs = new HashMap<ProgramStatement, Integer>();
+		
 		ProgramStatement lastCommonProgramStatement = null;
 
-		Stack<ProgramStatement> lastIfElseWithoutElseStack = new Stack<>();
+		Stack<ProgramStatement> stackLastIfElseWithoutElse = new Stack<>();
 		ProgramStatement lastIfElseWithoutElse = null;
 
-		Stack<Boolean> markLastIfElseStatementStack = new Stack<>();
-		boolean markLastIfElseStatement = false;
+		Stack<Boolean> stackAddIfElseFollowingStatement = new Stack<>();
+		boolean addIfElseFollowingStatement = false;
 		
-		for(ProgramStatement programStatement : programStatements) {
+		Stack<ProgramStatement> stackLastLoopHeader = new Stack<>();
+		Stack<Integer> stackLastLoopHeaderLevel = new Stack<>();
+		ProgramStatement lastLoopHeader = null;
+		
+		for(ProgramStatement programStatement : programStatements) {			
 			StatementType statementType = programStatement.getStatementType();
 
 			if (statementType == StatementType.BLOCK_OPEN) {
-				levelsPreviousSequenceIDStack.push(currentLevelSequenceIDMap);
-				currentLevelSequenceIDMap = new HashMap<>();
+				// Save current state on stacks
+				stackLevelsPreviousSequenceIDs.push(currentLevelPreviousSequenceIDs);
+				stackLastIfElseWithoutElse.push(lastIfElseWithoutElse);
+				stackAddIfElseFollowingStatement.push(addIfElseFollowingStatement);
+				stackLastLoopHeader.push(lastLoopHeader);
+				
+				// Prepare next level
+				lastLoopHeader = null;
+				currentLevelPreviousSequenceIDs = new HashMap<>();
 				currentLevel++;
 
-				lastIfElseWithoutElseStack.push(lastIfElseWithoutElse);
-				markLastIfElseStatementStack.push(markLastIfElseStatement);
-
 			} else if (statementType == StatementType.BLOCK_CLOSE) {
-				// Add last instruction of block on previous list
-				if (markLastIfElseStatement && lastCommonProgramStatement != null) {
-					currentLevelSequenceIDMap.put(lastCommonProgramStatement, currentLevel);
-					markLastIfElseStatement = false;
-				}
-
-				// Add last if without else statement on map
+				// Add last if/if else without else on map
 				if (lastIfElseWithoutElse != null) {
-					currentLevelSequenceIDMap.put(lastIfElseWithoutElse, currentLevel);
+					currentLevelPreviousSequenceIDs.put(lastIfElseWithoutElse, currentLevel);
 				}
-				lastIfElseWithoutElse = lastIfElseWithoutElseStack.pop();
-
-				Map<ProgramStatement, Integer> parentLevelSequenceIDMap = levelsPreviousSequenceIDStack.pop();
-				if (!levelsPreviousSequenceIDStack.isEmpty() && !parentLevelSequenceIDMap.isEmpty()) {
-					parentLevelSequenceIDMap.putAll(currentLevelSequenceIDMap);
+				
+				// Get and add previous sequence id from this level to parent level 
+				Map<ProgramStatement, Integer> parentLevelSequenceIDs = stackLevelsPreviousSequenceIDs.pop();
+				
+				// Add common statement following if else on previous list
+				if (addIfElseFollowingStatement && lastCommonProgramStatement != null) {
+//					System.out.println("Adicao de " + lastCommonProgramStatement);
+					currentLevelPreviousSequenceIDs.put(lastCommonProgramStatement, currentLevel);
+//					System.out.println("Lista " + currentLevelPreviousSequenceIDs);
+//					System.out.println("Parent " + currentLevelPreviousSequenceIDs);
+					
+					addIfElseFollowingStatement = false;
+					lastCommonProgramStatement = null;
 				}
-
-				currentLevelSequenceIDMap = parentLevelSequenceIDMap;
+				
+				// Recover if/if else without else of parent level and set if has to add previous on following if/else statement on some of two levels   
+				lastIfElseWithoutElse = stackLastIfElseWithoutElse.pop();
+				addIfElseFollowingStatement = addIfElseFollowingStatement || stackAddIfElseFollowingStatement.pop();
+				
+				// TODO Recover and add previous statements from this level to open loop header from parent level
+				lastLoopHeader = stackLastLoopHeader.pop();
+				if(!stackLastLoopHeaderLevel.isEmpty() && currentLevel-1 <= stackLastLoopHeaderLevel.peek() && lastLoopHeader != null) {
+					stackLastLoopHeaderLevel.pop();
+					
+//					System.out.println("Adding " + currentLevelPreviousSequenceIDs);
+					for (Iterator<Map.Entry<ProgramStatement, Integer>> it = currentLevelPreviousSequenceIDs.entrySet().iterator(); it.hasNext();) {
+						Map.Entry<ProgramStatement, Integer> entry = it.next();
+						ProgramStatement mapProgramStatement = entry.getKey();
+						if(!mapProgramStatement.equals(lastLoopHeader)) {
+							lastLoopHeader.addPrevSequenceID(mapProgramStatement.getSequenceID());
+						}
+						it.remove();
+					}
+				}
+				
+				if (!stackLevelsPreviousSequenceIDs.isEmpty()) {
+					parentLevelSequenceIDs.putAll(currentLevelPreviousSequenceIDs);
+//					System.out.println(parentLevelSequenceIDs);
+				}
+				currentLevelPreviousSequenceIDs = parentLevelSequenceIDs;
 				currentLevel--;
-				markLastIfElseStatement = markLastIfElseStatement || markLastIfElseStatementStack.pop();
+				
+//				System.out.println("Lista 2 " + currentLevelPreviousSequenceIDs);
 
 			} else if (statementType == StatementType.IF) {
-				for (Iterator<Map.Entry<ProgramStatement, Integer>> it = currentLevelSequenceIDMap.entrySet().iterator(); it.hasNext();) {
+				for (Iterator<Map.Entry<ProgramStatement, Integer>> it = currentLevelPreviousSequenceIDs.entrySet().iterator(); it.hasNext();) {
 					Map.Entry<ProgramStatement, Integer> entry = it.next();
 					ProgramStatement mapProgramStatement = entry.getKey();
 					programStatement.addPrevSequenceID(mapProgramStatement.getSequenceID());
 					it.remove();
 				}
 
-				currentLevelSequenceIDMap.put(programStatement, currentLevel);
-				markLastIfElseStatement = true;
+				currentLevelPreviousSequenceIDs.put(programStatement, currentLevel);
+				addIfElseFollowingStatement = true;
 				lastIfElseWithoutElse = programStatement;
+				lastCommonProgramStatement = null;
 
 			} else if (statementType == StatementType.ELSE_IF) {
 				programStatement.addPrevSequenceID(lastIfElseWithoutElse.getSequenceID());
 
-				currentLevelSequenceIDMap.remove(lastIfElseWithoutElse);
-				currentLevelSequenceIDMap.put(programStatement, currentLevel);
-				markLastIfElseStatement = true;
+				currentLevelPreviousSequenceIDs.remove(lastIfElseWithoutElse);
+				currentLevelPreviousSequenceIDs.put(programStatement, currentLevel);
+				addIfElseFollowingStatement = true;
 				lastIfElseWithoutElse = programStatement;
+				lastCommonProgramStatement = null;
 
 			} else if (statementType == StatementType.ELSE) {
 				programStatement.addPrevSequenceID(lastIfElseWithoutElse.getSequenceID());
 
-				currentLevelSequenceIDMap.remove(lastIfElseWithoutElse);
-				markLastIfElseStatement = true;
+				currentLevelPreviousSequenceIDs.remove(lastIfElseWithoutElse);
+				addIfElseFollowingStatement = true;
 				lastIfElseWithoutElse = null;
+				lastCommonProgramStatement = null;
 			
 			} else if (statementType == StatementType.FOR || statementType == StatementType.WHILE) {
-				for (Map.Entry<ProgramStatement, Integer> entry : currentLevelSequenceIDMap.entrySet()) {
+				for (Iterator<Map.Entry<ProgramStatement, Integer>> it = currentLevelPreviousSequenceIDs.entrySet().iterator(); it.hasNext();) {
+					Entry<ProgramStatement, Integer> entry = it.next();
 					ProgramStatement mapProgramStatement = entry.getKey();
-
-					if(mapProgramStatement.getStatementType() == StatementType.FOR || mapProgramStatement.getStatementType() == StatementType.WHILE){
-						if(entry.getValue() == currentLevel){
-							programStatement.addPrevSequenceID(mapProgramStatement.getSequenceID());
-							mapProgramStatement.addPrevSequenceID(programStatement.getSequenceID()-1);
-							currentLevelSequenceIDMap.remove(mapProgramStatement);
-							break;
-						}
-					} else {
-						programStatement.addPrevSequenceID(mapProgramStatement.getSequenceID());
-					}
+					programStatement.addPrevSequenceID(mapProgramStatement.getSequenceID());
+					it.remove();
 				}
-				currentLevelSequenceIDMap.put(programStatement, currentLevel);
+
+				//TODO Set statement as an open header to receive child level previous ids
+				currentLevelPreviousSequenceIDs.put(programStatement, currentLevel);
+				lastLoopHeader = programStatement;
+				stackLastLoopHeaderLevel.push(currentLevel);
+				lastCommonProgramStatement = null;
 				
 			} else {  // Other statement types
-				for (Map.Entry<ProgramStatement, Integer> entry : currentLevelSequenceIDMap.entrySet()) {
+				Map<ProgramStatement, Integer> newStamentsMap = new HashMap<>();
+				for (Iterator<Map.Entry<ProgramStatement, Integer>> it = currentLevelPreviousSequenceIDs.entrySet().iterator(); it.hasNext();) {
+					Entry<ProgramStatement, Integer> entry = it.next();
 					ProgramStatement mapProgramStatement = entry.getKey();
+					StatementType mapProgramStatementType = mapProgramStatement.getStatementType();
 					
-					if(mapProgramStatement.getStatementType() == StatementType.FOR || mapProgramStatement.getStatementType() == StatementType.WHILE){
-						if(entry.getValue() == currentLevel){
+					if(mapProgramStatementType == StatementType.FOR || mapProgramStatementType == StatementType.WHILE) {
+						if(entry.getValue() == currentLevel) {
 							programStatement.addPrevSequenceID(mapProgramStatement.getSequenceID());
 							mapProgramStatement.addPrevSequenceID(programStatement.getSequenceID()-1);
-							currentLevelSequenceIDMap.remove(mapProgramStatement);
-							break;
+							newStamentsMap.put(programStatement, currentLevel);
+							it.remove();
+//							break;
 						}
 					} else {
 						programStatement.addPrevSequenceID(mapProgramStatement.getSequenceID());
+						if(lastLoopHeader != null) {
+//							System.out.println("Aqui");
+							newStamentsMap.put(programStatement, currentLevel);
+						}
 					}
 				}
-
-				// Check if a if, elseif, else, for, while is open and check if is last instruction
+				currentLevelPreviousSequenceIDs.putAll(newStamentsMap);
 				
 				lastCommonProgramStatement = programStatement;
 			}
 		}
 		
+		//Remove repeated values
 		for (int i = 0; i < programStatements.size(); i++) {
+			List<Integer> prevSeqIdList = programStatements.get(i).getPrevSequenceIDs();
+			Set<Integer> set = new HashSet<>();
+			set.addAll(prevSeqIdList);
+			prevSeqIdList.clear();
+			prevSeqIdList.addAll(set);
+			
+			programStatements.get(i).setPrevSequenceIDs(prevSeqIdList);
 			Collections.sort(programStatements.get(i).getPrevSequenceIDs());
 		}
-
+		
 		return programStatements;
 	}
 

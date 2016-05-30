@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import br.ufrn.imd.optmalg.model.BasicBlock;
 import br.ufrn.imd.optmalg.model.CFG;
+import br.ufrn.imd.optmalg.model.Edge;
 import br.ufrn.imd.optmalg.model.Node;
 import br.ufrn.imd.optmalg.model.Path;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
@@ -24,6 +25,9 @@ public class Main {
 			System.out.println("[INFO] Processing file " + filepath);
 			try {
 				List<ProgramStatement> programStatements = Optmalg.createProgramStatementList(filepath);
+//				for(ProgramStatement programStatement : programStatements) {
+//					System.out.println(programStatement);
+//				}
 				List<BasicBlock> basicBlocks = Optmalg.getBasicBlocks(programStatements);
 				CFG cfg = Optmalg.getCFG(basicBlocks);
 				System.out.println("===== CFG =====");
@@ -46,8 +50,14 @@ public class Main {
 				
 				System.out.println("===== LOOPS =====");
 				List<CFG> naturalLoops = CodeAlgorithms.findNaturalLoops(dTree, cfg);
-				for(CFG loop : naturalLoops) {
-					loop.print();
+				for(int l = 0; l < naturalLoops.size(); l++) {
+					CFG loop = naturalLoops.get(l);
+					System.out.println("Loop: " + (l+1));
+					System.out.println(loop.getNodes());
+					System.out.println(loop.getEdges());
+					for(Edge edge : loop.getEdges()) {
+						System.out.println(edge);
+					}
 				}
 				
 			} catch (FileNotFoundException e) {
