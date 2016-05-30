@@ -30,10 +30,10 @@ public class OptmalgTest {
 			
 			int[] expectedPrevious = statementsPrevious[i];
 			List<Integer> previous = programStatement.getPrevSequenceIDs();
-			assertEquals("Different previous list size for statement " + statement, expectedPrevious.length, previous.size());
+			assertEquals("Different previous list size for statement " + statement + ". Generated list: " + previous, expectedPrevious.length, previous.size());
 			
 			for(int j = 0; j < expectedPrevious.length; j++) {
-				assertEquals("Different previous value for statement " + statement, expectedPrevious[j], previous.get(j).intValue());
+				assertEquals("Different previous value for statement " + statement + ". Generated list: " + previous, expectedPrevious[j], previous.get(j).intValue());
 			}
 		}
 	}
@@ -94,7 +94,11 @@ public class OptmalgTest {
 						     "for(int i = 0; i < 100; i++)", "{", "System.out.println(i)", "}", "System.out.println(\"Finished \" + i + \" intern loop\")", "}", "for(int i = 0; i < 100; i++)", "{", "System.out.println(\"Running intern \" + i + \" loop\")", "for(int i = 0; i < 100; i++)", "{", "System.out.println(i)", "}",
 						     "System.out.println(\"Finished \" + i + \" intern loop\")", "}", "if (true)", "{", "a = b + 1", "}", "System.out.println(\"Finished\")", "}", "}" },
 						 	 new int[][] {{}, {0}, {}, {1}, {}, {2}, {3, 8}, {}, {4}, {5, 7}, {}, {6}, {}, {6}, {}, {4}, {}, {9}, {10, 12}, {}, {11}, {}, {11}, {}, {9}, {}, {14}, {}, {14,15}, {}, {}}
-			}
+				},
+				new Object[]{"input/TestForIfElse.java", 23, new String[] { "package br.ufrn.imd", "public class TestForIfElse", "{", "public static void main(String[] args)", "{", "System.out.println(\"Starting\")", "for(int i = 0; i < 100; i++)", "{", "System.out.println(\"In loop\")", "if(a == 2)", "{",
+							 "System.out.println(\"Dois\")", "System.out.println(\"Dois\")", "}", "else", "{", "System.out.println(\"Outro\")", "System.out.println(\"Outro\")", "}", "}", "System.out.println(\"Finished\")", "}", "}" },
+					 	 new int[][] {{}, {0}, {}, {1}, {}, {2}, {3,  8, 11}, {}, {4}, {5}, {}, {6}, {7}, {}, {6}, {}, {9}, {10}, {}, {}, {4}, {}, {}}
+				}
 				
 		};
 	}
@@ -143,21 +147,28 @@ public class OptmalgTest {
 																	      {"if (true)"},
 																	      {"a = b + 1"},
 																	      {"System.out.println(\"Finished\")"}
-																		}}
+																		}},
+				new Object[]{"input/TestForIfElse.java", 5, new String[][] { {"package br.ufrn.imd", "public class TestForIfElse", "public static void main(String[] args)", "System.out.println(\"Starting\")", "for(int i = 0; i < 100; i++)"},
+																			 {"System.out.println(\"In loop\")", "if(a == 2)"},
+																			 {"System.out.println(\"Dois\")", "System.out.println(\"Dois\")"},
+																		     {"else", "System.out.println(\"Outro\")", "System.out.println(\"Outro\")"},
+																		     {"System.out.println(\"Finished\")"}
+																		  }}
 		};
 	}
 
 	
 	public Object[] getCFGParams() {
 		return new Object[] {
-				new Object[]{"input/TestFor2.java", 7, 8},
-				new Object[]{"input/TestFor.java", 5, 5},
-				new Object[]{"input/TestIfElse3.java", 15, 19},
-				new Object[]{"input/TestIgnoreFormattingAndComments.java", 14, 19},
-				new Object[]{"input/TestForIf.java", 13, 17},
-				new Object[]{"input/TestIfElse2.java", 11, 16},
 				new Object[]{"input/TestIfElse.java", 8, 9},
-				new Object[]{"input/TestLinearCode.java", 3, 2}
+				new Object[]{"input/TestIfElse2.java", 11, 16},
+				new Object[]{"input/TestIfElse3.java", 15, 19},
+				new Object[]{"input/TestFor.java", 5, 5},
+				new Object[]{"input/TestFor2.java", 7, 8},
+				new Object[]{"input/TestForIf.java", 13, 17},
+				new Object[]{"input/TestForIfElse.java", 7, 8 /*???????*/}, 
+				new Object[]{"input/TestLinearCode.java", 3, 2},
+				new Object[]{"input/TestIgnoreFormattingAndComments.java", 14, 19}
 		};
 	}
 
