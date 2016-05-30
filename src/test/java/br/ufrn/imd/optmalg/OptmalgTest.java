@@ -98,6 +98,10 @@ public class OptmalgTest {
 				new Object[]{"input/TestForIfElse.java", 23, new String[] { "package br.ufrn.imd", "public class TestForIfElse", "{", "public static void main(String[] args)", "{", "System.out.println(\"Starting\")", "for(int i = 0; i < 100; i++)", "{", "System.out.println(\"In loop\")", "if(a == 2)", "{",
 							 "System.out.println(\"Dois\")", "System.out.println(\"Dois\")", "}", "else", "{", "System.out.println(\"Outro\")", "System.out.println(\"Outro\")", "}", "}", "System.out.println(\"Finished\")", "}", "}" },
 					 	 new int[][] {{}, {0}, {}, {1}, {}, {2}, {3,  8, 11}, {}, {4}, {5}, {}, {6}, {7}, {}, {6}, {}, {9}, {10}, {}, {}, {4}, {}, {}}
+				},
+				new Object[]{"input/TestIfFor.java", 17, new String[] { "package br.ufrn.imd", "public class TestFor", "{", "public static void main(String[] args)", "{", "System.out.println(\"Starting\")", "if(true)", "{", "for(int i = 0; i < 100; i++)", "{", "System.out.println(\"In loop\")", "System.out.println(i)", "}",
+						 "}",  "System.out.println(\"Finished\")", "}", "}" },
+				 	 new int[][] {{}, {0}, {}, {1}, {}, {2}, {3}, {}, {4, 7}, {}, {4}, {5}, {}, {}, {4}, {}, {}}
 				}
 				
 		};
@@ -152,6 +156,11 @@ public class OptmalgTest {
 																			 {"System.out.println(\"In loop\")", "if(a == 2)"},
 																			 {"System.out.println(\"Dois\")", "System.out.println(\"Dois\")"},
 																		     {"else", "System.out.println(\"Outro\")", "System.out.println(\"Outro\")"},
+																		     {"System.out.println(\"Finished\")"}
+																		  }},
+				new Object[]{"input/TestIfFor.java", 5, new String[][] { {"package br.ufrn.imd", "public class TestForIfElse", "public static void main(String[] args)", "System.out.println(\"Starting\")", "if(true)"},
+																			 {"for(int i = 0; i < 100; i++)"},
+																			 {"System.out.println(\"In loop\")", "System.out.println(i)"},
 																		     {"System.out.println(\"Finished\")"}
 																		  }}
 		};
