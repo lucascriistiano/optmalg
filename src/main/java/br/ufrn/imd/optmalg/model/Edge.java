@@ -37,7 +37,6 @@ public class Edge implements Serializable {
 			}
 		}
 		return false;
-		
 	}
 
 	public double getWeight() {

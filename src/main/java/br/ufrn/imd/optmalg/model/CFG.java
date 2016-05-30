@@ -55,6 +55,16 @@ public class CFG implements Serializable, Cloneable {
 		return this.edges;
 	}
 	
+	public List<Edge> getBackEdges() {
+		List<Edge> backEdges = new ArrayList<>();
+		for(Edge edge : this.edges) {
+			if(edge.isBackEdge()) {
+				backEdges.add(edge);
+			}
+		}
+		return backEdges;
+	}
+	
 	public Node getEntryNode() {
 		return entryNode;
 	}

@@ -19,6 +19,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import br.ufrn.imd.optmalg.model.BasicBlock;
 import br.ufrn.imd.optmalg.model.CFG;
 import br.ufrn.imd.optmalg.model.Node;
+import br.ufrn.imd.optmalg.model.Edge;
 import br.ufrn.imd.optmalg.model.Path;
 import br.ufrn.imd.optmalg.model.ProgramStatement;
 import br.ufrn.imd.optmalg.model.StatementType;
@@ -457,18 +458,54 @@ public class CodeAlgorithms {
 	}
 	
 	public static List<CFG> findNaturalLoops(DTree dTree, CFG cfg){
+		// List<CFG> naturalLoops = new ArrayList<CFG>();
+
+		// List<DTreeNode> dTreeNodes = dTree.toList(); 
+		// for(DTreeNode hDNode : dTreeNodes){
+		// 	for(DTreeNode nDNode : dTreeNodes){
+		// 		if(dTree.backEdgeExits(nDNode, hDNode)){ //TODO Talvez nao funcione
+		// 			List<Path> pathsFromHToN = findPathsBetween(cfg, hDNode.getCfgNode(), nDNode.getCfgNode());
+		// 			for(Path path : pathsFromHToN) {
+		// 				CFG loop = new CFG();
+		// 				loop.createEdge(nDNode.getCfgNode(), hDNode.getCfgNode());
+		// 				loop.addNode(nDNode.getCfgNode()); 
+		// 				loop.addNode(hDNode.getCfgNode());
+						
+		// 				List<Node> pathNodes = path.getNodes();
+		// 				for(int i = 0; i < pathNodes.size() - 1; i++) {
+		// 					Node currentNode = pathNodes.get(i);
+		// 					Node nextNode = pathNodes.get(i+1);
+							
+		// 					loop.createEdge(currentNode, nextNode);
+		// 					loop.addNode(currentNode); 
+		// 					loop.addNode(nextNode); 
+		// 				}
+						
+		// 				naturalLoops.add(loop);
+		// 			}
+		// 		}
+		// 	}
+		// }
+		
+		// return naturalLoops;
+		
 		List<CFG> naturalLoops = new ArrayList<CFG>();
 
+		List<Edge> backEdges = cfg.getBackEdges();
+		
 		List<DTreeNode> dTreeNodes = dTree.toList(); 
 		for(DTreeNode hDNode : dTreeNodes){
 			for(DTreeNode nDNode : dTreeNodes){
-				if(dTree.backEdgeExits(nDNode, hDNode)){ //TODO Talvez nao funcione
-					List<Path> pathsFromHToN = findPathsBetween(cfg, hDNode.getCfgNode(), nDNode.getCfgNode());
+				Node hCFGNode = hDNode.getCfgNode();
+				Node nCFGNode = nDNode.getCfgNode();
+				
+				if(backEdges.contains(new Edge(hCFGNode, nCFGNode))) {
+					List<Path> pathsFromHToN = findPathsBetween(cfg, hCFGNode, nCFGNode);
 					for(Path path : pathsFromHToN) {
 						CFG loop = new CFG();
-						loop.createEdge(nDNode.getCfgNode(), hDNode.getCfgNode());
-						loop.addNode(nDNode.getCfgNode()); 
-						loop.addNode(hDNode.getCfgNode());
+						loop.createEdge(nCFGNode, hCFGNode);
+						loop.addNode(nCFGNode); 
+						loop.addNode(hCFGNode);
 						
 						List<Node> pathNodes = path.getNodes();
 						for(int i = 0; i < pathNodes.size() - 1; i++) {
