@@ -287,7 +287,7 @@ public class CodeAlgorithms {
 					StatementType mapProgramStatementType = mapProgramStatement.getStatementType();
 					
 					if(mapProgramStatementType == StatementType.FOR || mapProgramStatementType == StatementType.WHILE) {
-						if(entry.getValue() == currentLevel) {
+						if(entry.getValue() >= currentLevel) {
 							programStatement.addPrevSequenceID(mapProgramStatement.getSequenceID());
 							mapProgramStatement.addPrevSequenceID(programStatement.getSequenceID()-1);
 							newStamentsMap.put(programStatement, currentLevel);
