@@ -10,6 +10,10 @@ public class Path {
 	public Path(List<Node> path) {
 		this.nodes = new ArrayList<>(path);
 	}
+	
+	public List<Node> getNodes() {
+		return this.nodes;
+	}
 
 	public void print() {
 		for (int i = 0; i < this.nodes.size(); i++) {

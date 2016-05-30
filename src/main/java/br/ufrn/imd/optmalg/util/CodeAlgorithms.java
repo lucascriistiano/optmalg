@@ -452,42 +452,75 @@ public class CodeAlgorithms {
 				}
 			}
 		}
-
-		treeToList(dTree.getDNodeList(), dTree.getRoot());
 		
 		return dTree;
 	}
 	
-
-	private static void treeToList(List<DTreeNode> dNodes, DTreeNode dnode){
-		for(DTreeNode dnodeChild : dnode.getChildren()){
-			if(!dNodes.contains(dnodeChild)){
-				dNodes.add(dnodeChild);
-				treeToList(dNodes, dnodeChild);
-			}
-		}
-	}
-	
-	public static List<CFG> findNaturalLoops(DTree dTree){
+	public static List<CFG> findNaturalLoops(DTree dTree, CFG cfg){
 		List<CFG> naturalLoops = new ArrayList<CFG>();
-		for(DTreeNode hdNode : dTree.getDNodeList()){
-			for(DTreeNode ndNode : dTree.getDNodeList()){
-				if(dTree.backEdgeExits(ndNode, hdNode)){ // Talvez não funcione
-					CFG loop = new CFG();
-					loop.createEdge(ndNode.getCfgNode(), hdNode.getCfgNode());
-					loop.addNode(ndNode.getCfgNode()); 
-					loop.addNode(hdNode.getCfgNode());
+
+		List<DTreeNode> dTreeNodes = dTree.toList(); 
+		for(DTreeNode hDNode : dTreeNodes){
+			for(DTreeNode nDNode : dTreeNodes){
+				if(dTree.backEdgeExits(nDNode, hDNode)){ //TODO Talvez nao funcione
+					// CFG loop = new CFG();
+					// loop.createEdge(nDNode.getCfgNode(), hDNode.getCfgNode());
+					// loop.addNode(nDNode.getCfgNode()); 
+					// loop.addNode(hDNode.getCfgNode());
 					
-//					for( ; ; ){
-//						
-//					}
-					naturalLoops.add(loop);
+					// for(Edge edge : cfg.getEdges()){
+					// 	if(  
+					// 	nDNode.getCfgNode().getDominators().contains( edge.getDestination() ) 
+					// 	nDNode.getCfgNode().getDominators().contains( edge.getOrigin() )
+						
+					// 	edge.getDestination().getDominators().contains( hDNode.getCfgNode() )
+					// 	edge.getOrigin().getDominators().contains( hDNode.getCfgNode() )
+					// 	){
+					// 		loop.createEdge(edge.getOrigin(), edge.getDestination());
+					// 		loop.addNode(edge.getOrigin()); 
+					// 		loop.addNode(edge.getDestination());
+					// 	}
+					// }
+					
+					List<Path> pathsFromHToN = findPathsBetween(cfg, hDNode.getCfgNode(), nDNode.getCfgNode());
+					for(Path path : pathsFromHToN) {
+						CFG loop = new CFG();
+						loop.createEdge(nDNode.getCfgNode(), hDNode.getCfgNode());
+						loop.addNode(nDNode.getCfgNode()); 
+						loop.addNode(hDNode.getCfgNode());
+						
+						List<Node> pathNodes = path.getNodes();
+						for(int i = 0; i < pathNodes.size() - 1; i++) {
+							Node currentNode = pathNodes.get(i);
+							Node nextNode = pathNodes.get(i+1);
+							
+							loop.createEdge(currentNode, nextNode);
+							loop.addNode(currentNode); 
+							loop.addNode(nextNode); 
+						}
+						
+						naturalLoops.add(loop);
+					}
+					// naturalLoops.add(loop);
 				}
 			}
 		}
 		
-		
 		return naturalLoops;
+	}
+	
+	public static List<Path> findExecutionPaths(CFG cfg) {
+	    return findPathsBetween(cfg, cfg.getEntryNode(), cfg.getExitNode());
+	}
+	
+	private static List<Path> findPathsBetween(CFG cfg, Node startNode, Node endNode) {
+	    Stack<Node> path = new Stack<>();   // the current path
+	    Set<Node> onPath = new HashSet<>(); // the set of vertices on the path
+	    
+	    List<Path> foundPaths = new ArrayList<>();
+	    findPaths(cfg, startNode, endNode, path, onPath, foundPaths);
+	    
+	    return foundPaths;
 	}
 	
 	private static void findPaths(CFG cfg, Node origin, Node destiny, Stack<Node> path, Set<Node> onPath, List<Path> foundPaths) {
@@ -510,17 +543,6 @@ public class CodeAlgorithms {
         // Finished exploration from origin, so 
         path.pop();
         onPath.remove(origin);
-	}
-	
-	public static List<Path> findExecutionPaths(CFG cfg) {
-	    Stack<Node> path = new Stack<>();   // the current path
-	    Set<Node> onPath = new HashSet<>(); // the set of vertices on the path
-	    
-	    List<Path> foundPaths = new ArrayList<>();
-	    findPaths(cfg, cfg.getEntryNode(), cfg.getExitNode(), path, onPath, foundPaths);
-	    
-	    return foundPaths;
-
 	}
 	
 	private static  boolean equalNodeLists(List<Node> firstList, List<Node> secondList){     
