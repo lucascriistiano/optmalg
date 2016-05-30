@@ -44,6 +44,12 @@ public class Main {
 					executionPath.print();
 				}
 				
+				System.out.println("===== LOOPS =====");
+				List<CFG> naturalLoops = CodeAlgorithms.findNaturalLoops(dTree, cfg);
+				for(CFG loop : naturalLoops) {
+					loop.print();
+				}
+				
 			} catch (FileNotFoundException e) {
 				System.err.println("[ERROR] File " + filepath + " not found!");
 			}

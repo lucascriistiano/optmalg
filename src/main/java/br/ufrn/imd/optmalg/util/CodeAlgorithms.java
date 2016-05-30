@@ -463,25 +463,6 @@ public class CodeAlgorithms {
 		for(DTreeNode hDNode : dTreeNodes){
 			for(DTreeNode nDNode : dTreeNodes){
 				if(dTree.backEdgeExits(nDNode, hDNode)){ //TODO Talvez nao funcione
-					// CFG loop = new CFG();
-					// loop.createEdge(nDNode.getCfgNode(), hDNode.getCfgNode());
-					// loop.addNode(nDNode.getCfgNode()); 
-					// loop.addNode(hDNode.getCfgNode());
-					
-					// for(Edge edge : cfg.getEdges()){
-					// 	if(  
-					// 	nDNode.getCfgNode().getDominators().contains( edge.getDestination() ) 
-					// 	nDNode.getCfgNode().getDominators().contains( edge.getOrigin() )
-						
-					// 	edge.getDestination().getDominators().contains( hDNode.getCfgNode() )
-					// 	edge.getOrigin().getDominators().contains( hDNode.getCfgNode() )
-					// 	){
-					// 		loop.createEdge(edge.getOrigin(), edge.getDestination());
-					// 		loop.addNode(edge.getOrigin()); 
-					// 		loop.addNode(edge.getDestination());
-					// 	}
-					// }
-					
 					List<Path> pathsFromHToN = findPathsBetween(cfg, hDNode.getCfgNode(), nDNode.getCfgNode());
 					for(Path path : pathsFromHToN) {
 						CFG loop = new CFG();
@@ -501,7 +482,6 @@ public class CodeAlgorithms {
 						
 						naturalLoops.add(loop);
 					}
-					// naturalLoops.add(loop);
 				}
 			}
 		}
