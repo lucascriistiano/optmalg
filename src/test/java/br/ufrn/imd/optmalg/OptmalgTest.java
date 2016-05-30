@@ -101,7 +101,7 @@ public class OptmalgTest {
 				},
 				new Object[]{"input/TestIfFor.java", 17, new String[] { "package br.ufrn.imd", "public class TestFor", "{", "public static void main(String[] args)", "{", "System.out.println(\"Starting\")", "if(true)", "{", "for(int i = 0; i < 100; i++)", "{", "System.out.println(\"In loop\")", "System.out.println(i)", "}",
 						 "}",  "System.out.println(\"Finished\")", "}", "}" },
-				 	 new int[][] {{}, {0}, {}, {1}, {}, {2}, {3}, {}, {4, 7}, {}, {4}, {5}, {}, {}, {4}, {}, {}}
+				 	 new int[][] {{}, {0}, {}, {1}, {}, {2}, {3}, {}, {4, 7}, {}, {5}, {6}, {}, {}, {4, 5}, {}, {}}
 				}
 				
 		};
@@ -140,6 +140,12 @@ public class OptmalgTest {
 																		    {"else", "System.out.println(\"Outro\")", "System.out.println(\"Outro\")"},
 																		    {"System.out.println(\"Finished\")"}
 																		 }},
+				new Object[]{"input/TestIfFor.java", 4, new String[][] { {"package br.ufrn.imd", "public class TestIfFor", "public static void main(String[] args)", "System.out.println(\"Starting\")", "if(true)"},
+																			 {"for(int i = 0; i < 100; i++)"},
+																			 {"System.out.println(\"In loop\")", "System.out.println(i)"},
+																		     {"System.out.println(\"Finished\")"}
+																		  }},
+				
 				new Object[]{"input/TestForIf.java", 11, new String[][] { {"package br.ufrn.imd", "public class TestForIf", "public static void main(String[] args)", "System.out.println(\"Starting\")", "for(int i = 0; i < 100; i++)"},
 																	      {"System.out.println(\"Running intern \" + i + \" loop\")", "for(int i = 0; i < 100; i++)"},
 																	      {"System.out.println(i)"},
@@ -157,27 +163,24 @@ public class OptmalgTest {
 																			 {"System.out.println(\"Dois\")", "System.out.println(\"Dois\")"},
 																		     {"else", "System.out.println(\"Outro\")", "System.out.println(\"Outro\")"},
 																		     {"System.out.println(\"Finished\")"}
-																		  }},
-				new Object[]{"input/TestIfFor.java", 5, new String[][] { {"package br.ufrn.imd", "public class TestForIfElse", "public static void main(String[] args)", "System.out.println(\"Starting\")", "if(true)"},
-																			 {"for(int i = 0; i < 100; i++)"},
-																			 {"System.out.println(\"In loop\")", "System.out.println(i)"},
-																		     {"System.out.println(\"Finished\")"}
 																		  }}
+				
 		};
 	}
 
 	
 	public Object[] getCFGParams() {
 		return new Object[] {
-				new Object[]{"input/TestIfElse.java", 8, 9},
 				new Object[]{"input/TestIfElse2.java", 11, 16},
 				new Object[]{"input/TestIfElse3.java", 15, 19},
+				new Object[]{"input/TestIfFor.java", 6, 7 /*???????*/},
 				new Object[]{"input/TestFor.java", 5, 5},
 				new Object[]{"input/TestFor2.java", 7, 8},
 				new Object[]{"input/TestForIf.java", 13, 17},
 				new Object[]{"input/TestForIfElse.java", 7, 8 /*???????*/}, 
 				new Object[]{"input/TestLinearCode.java", 3, 2},
 				new Object[]{"input/TestIgnoreFormattingAndComments.java", 14, 19}
+				
 		};
 	}
 
