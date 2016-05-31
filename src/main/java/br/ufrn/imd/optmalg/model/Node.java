@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * Code adapted from http://learn.yancyparedes.net/2012/03/my-graph-implementation-in-java/
- *
  */
 public class Node implements Serializable {
 
@@ -17,11 +16,8 @@ public class Node implements Serializable {
 	private List<Node> children;
 	private List<Node> dominators;
 
-	protected boolean visited;
-	public Integer index = null;
-	public Integer lowlink = null;
+	private boolean visited;
 	public double distance = Double.POSITIVE_INFINITY;
-	public Node predecessor = null;
 
 	public Node(String label) {
 		this(label, new BasicBlock());

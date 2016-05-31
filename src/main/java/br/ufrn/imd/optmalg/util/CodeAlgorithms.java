@@ -105,7 +105,6 @@ public class CodeAlgorithms {
 					while(character != LINE_END){
 						character = code.charAt(++i);
 					}
-					//character = code.charAt(++i);
 					strStatement = strStatement.substring(0, strStatement.length()-1);
 				}else{
 					strStatement += character;
@@ -118,9 +117,9 @@ public class CodeAlgorithms {
 					while((i+1) < code.length() && character != STAR && code.charAt(i+1) != BAR){
 						character = code.charAt(++i);
 					}
-					character = code.charAt(++i);//Retira a barra que estar por vir
+					character = code.charAt(++i); // Remove next bar
 					strStatement = strStatement.substring(0, strStatement.length()-1);
-					strStatement+=BLANK_SPACE; //Isso pq eu testei case/**/STAR: funciona
+					strStatement+=BLANK_SPACE;
 					strStatement.replaceAll(" ", " ");
 				}else{
 					strStatement += character;
@@ -197,10 +196,7 @@ public class CodeAlgorithms {
 				
 				// Add common statement following if else on previous list
 				if (addIfElseFollowingStatement && lastCommonProgramStatement != null) {
-//					System.out.println("Adicao de " + lastCommonProgramStatement);
 					currentLevelPreviousSequenceIDs.put(lastCommonProgramStatement, currentLevel);
-//					System.out.println("Lista " + currentLevelPreviousSequenceIDs);
-//					System.out.println("Parent " + currentLevelPreviousSequenceIDs);
 					
 					addIfElseFollowingStatement = false;
 					lastCommonProgramStatement = null;
@@ -210,12 +206,11 @@ public class CodeAlgorithms {
 				lastIfElseWithoutElse = stackLastIfElseWithoutElse.pop();
 				addIfElseFollowingStatement = addIfElseFollowingStatement || stackAddIfElseFollowingStatement.pop();
 				
-				// TODO Recover and add previous statements from this level to open loop header from parent level
+				// Recover and add previous statements from this level to open loop header from parent level
 				lastLoopHeader = stackLastLoopHeader.pop();
 				if(!stackLastLoopHeaderLevel.isEmpty() && currentLevel-1 <= stackLastLoopHeaderLevel.peek() && lastLoopHeader != null) {
 					stackLastLoopHeaderLevel.pop();
 					
-//					System.out.println("Adding " + currentLevelPreviousSequenceIDs);
 					for (Iterator<Map.Entry<ProgramStatement, Integer>> it = currentLevelPreviousSequenceIDs.entrySet().iterator(); it.hasNext();) {
 						Map.Entry<ProgramStatement, Integer> entry = it.next();
 						ProgramStatement mapProgramStatement = entry.getKey();
@@ -228,12 +223,10 @@ public class CodeAlgorithms {
 				
 				if (!stackLevelsPreviousSequenceIDs.isEmpty()) {
 					parentLevelSequenceIDs.putAll(currentLevelPreviousSequenceIDs);
-//					System.out.println(parentLevelSequenceIDs);
 				}
 				currentLevelPreviousSequenceIDs = parentLevelSequenceIDs;
 				currentLevel--;
 				
-//				System.out.println("Lista 2 " + currentLevelPreviousSequenceIDs);
 
 			} else if (statementType == StatementType.IF) {
 				for (Iterator<Map.Entry<ProgramStatement, Integer>> it = currentLevelPreviousSequenceIDs.entrySet().iterator(); it.hasNext();) {
@@ -273,7 +266,7 @@ public class CodeAlgorithms {
 					it.remove();
 				}
 
-				//TODO Set statement as an open header to receive child level previous ids
+				// Set statement as an open header to receive child level previous ids
 				currentLevelPreviousSequenceIDs.put(programStatement, currentLevel);
 				lastLoopHeader = programStatement;
 				stackLastLoopHeaderLevel.push(currentLevel);
@@ -292,12 +285,10 @@ public class CodeAlgorithms {
 							mapProgramStatement.addPrevSequenceID(programStatement.getSequenceID()-1);
 							newStamentsMap.put(programStatement, currentLevel);
 							it.remove();
-//							break;
 						}
 					} else {
 						programStatement.addPrevSequenceID(mapProgramStatement.getSequenceID());
 						if(lastLoopHeader != null) {
-//							System.out.println("Aqui");
 							newStamentsMap.put(programStatement, currentLevel);
 						}
 					}
@@ -399,8 +390,6 @@ public class CodeAlgorithms {
 		//Add EXIT node
 		cfg.setExitNode(exitNode);
 		
-		// etiquetarArestasCondicionais(gfc);
-		
 		calculateDominators(cfg);
 		
 		return cfg;
@@ -421,7 +410,7 @@ public class CodeAlgorithms {
 			changed = false;
 			for(Node node : cfg.getNodes()) {
 				if(!node.equals(entryNode)) {
-					List<Node> imediatePredecessors = cfg.getImediatePredecessors(node); //TODO Is it possible to calculate only once? Where to place it?
+					List<Node> imediatePredecessors = cfg.getImediatePredecessors(node);
 					
 					List<Node> imediatePredDominatorsIntersection = null;
 					for(Node imediatePredecessor : imediatePredecessors) {
@@ -497,12 +486,6 @@ public class CodeAlgorithms {
 				if(backEdges.contains(new Edge(hCFGNode, nCFGNode))) {
 					List<Path> pathsFromHToN = findPathsBetween(cfg, hCFGNode, nCFGNode);
 					for(Path path : pathsFromHToN) {
-						System.out.println("=================test=================");
-						System.out.println("H:" + hCFGNode);
-						System.out.println("N:" + nCFGNode);
-						path.print();
-						
-						
 						CFG loop = new CFG();
 						loop.createEdge(nCFGNode, hCFGNode);
 						loop.addNode(nCFGNode); 

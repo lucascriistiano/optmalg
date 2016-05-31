@@ -181,12 +181,11 @@ public class OptmalgTest {
 				new Object[]{"input/TestFor.java", 5, 5},
 				new Object[]{"input/TestFor2.java", 7, 8},
 				new Object[]{"input/TestForIf.java", 13, 17},
-				new Object[]{"input/TestForIfElse.java", 7, 8 /*???????*/},
-				new Object[]{"input/TestIfElse.java", 8, 9 /*???????*/},
+				new Object[]{"input/TestForIfElse.java", 7, 8},
+				new Object[]{"input/TestIfElse.java", 8, 9},
 				new Object[]{"input/TestIfElse2.java", 11, 16},
 				new Object[]{"input/TestIfElse3.java", 15, 19},
-				new Object[]{"input/TestIfFor.java", 6, 7 /*???????*/},
-//				new Object[]{"input/TestIgnoreFormattingAndComments.java", 9, 11},
+				new Object[]{"input/TestIfFor.java", 6, 7},
 				new Object[]{"input/TestLinearCode.java", 3, 2}
 		};
 	}
